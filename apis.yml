@@ -70,7 +70,7 @@ apis:
       - AI decision support
       - MCP
     properties:
-      - type: MCP
+      - type: MCPServer
         url: https://mcp.sybilion.dev/mcp
       - type: Documentation
         url: https://sybilion.dev/docs/
