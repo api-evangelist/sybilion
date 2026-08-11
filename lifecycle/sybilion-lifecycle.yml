@@ -1,0 +1,97 @@
+generated: '2026-08-11'
+method: searched
+source: https://sybilion.dev/docs/sdks/
+note: >-
+  This is a young program and the operational-transparency surface is where that shows. Versioning
+  and a stated additive-compatibility posture exist; a status page, a changelog, a deprecation
+  policy, an SLA and a retention figure do not. Everything below is either a probed URL or a quoted
+  docs sentence — nothing is inferred.
+versioning:
+  scheme: uri-path
+  current: v1
+  prefix: /api/v1
+  spec_version: 0.1.0
+  spec_version_source: 'openapi info.version at https://api.sybilion.dev/openapi.yaml'
+  docs: https://sybilion.dev/docs/sdks/
+  payload_discriminators: [pipeline_version, version]
+  artifact_contract_version: >-
+    Artifact JSON carries a top-level `version` (example "1.1"); the docs promise new fields may
+    appear inside `data` at the same major version.
+  compatibility_statement: >-
+    "The wire contract itself is OpenAPI-versioned; breaking changes appear as new operations or new
+    schema versions, not silent edits to existing ones." — https://sybilion.dev/docs/sdks/
+  header_versioning: false
+  date_pinning: false
+deprecation:
+  policy_url: null
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  deprecated_operations: []
+  note: >-
+    No deprecation policy page exists. https://sybilion.dev/docs/roadmap and
+    https://sybilion.dev/docs/changelog both return HTTP 200 serving the VitePress docs index
+    verbatim (33,668 bytes, identical to /docs/) — soft 404s, not pages. No operation in the
+    OpenAPI carries deprecated: true.
+changelog:
+  url: null
+  published: false
+  probed:
+    - { url: 'https://sybilion.dev/docs/changelog', status: 200, verdict: 'soft-404, docs index shell' }
+  note: >-
+    The only dated release evidence is the package registries — PyPI 8 releases 2026-05-12 to
+    2026-07-16, Go 5 tags, npm 3, CRAN 1. There is no human-readable changelog on any Sybilion
+    property.
+roadmap:
+  url: null
+  published: false
+  probed:
+    - { url: 'https://sybilion.dev/docs/roadmap', status: 200, verdict: 'soft-404, docs index shell' }
+  public_statements:
+    - >-
+      "Sub-monthly frequencies are on the roadmap, not in the public connector yet." —
+      https://www.sybilion.com/mcp. The only forward-looking commitment published anywhere, and it
+      is a single sentence on a marketing page.
+sla:
+  url: null
+  published: false
+  uptime_target: null
+  note: >-
+    The Tiers page says Enterprise customers get "custom limits, SLAs, and support" — i.e. an SLA is
+    a contract term, not a published document. Nothing exists for Free/Starter/Pro/Growth.
+status_page:
+  url: null
+  published: false
+  probed:
+    - { url: 'https://status.sybilion.dev', status: 000, verdict: 'DNS does not resolve' }
+    - { url: 'https://status.sybilion.com', status: 000, verdict: 'DNS does not resolve' }
+  substitute:
+    endpoint: 'GET https://api.sybilion.dev/health'
+    auth: none
+    documented: https://sybilion.dev/docs/health
+    semantics: >-
+      200 = all components healthy, 503 = at least one component in an error state; the body carries
+      a top-level status plus a per-component object. The docs explicitly warn that the set of
+      component keys may evolve and that clients must not hard-code them. This is a liveness probe a
+      caller can poll, not a status page — there is no incident history, no subscribe, no
+      component-level public dashboard.
+retention:
+  published: false
+  note: >-
+    Forecasts, jobs and artifacts return 404 once they fall outside a "post-settlement visibility
+    window". The docs reference the window in the 404 description on three operations but never
+    state its length, so an integrator cannot know how long results remain fetchable.
+support:
+  email: support@sybilion.com
+  slack: https://join.slack.com/t/sybilioncommunity/shared_invite/zt-3y6vx56nk-WJu35eLxkyFQr~Yfko6RjQ
+  discord: https://discord.gg/KMDyXBdQ8c
+  docs: https://sybilion.dev/docs/community
+summary:
+  versioning_published: true
+  deprecation_policy: false
+  changelog: false
+  roadmap: false
+  sla: false
+  status_page: false
+  health_endpoint: true

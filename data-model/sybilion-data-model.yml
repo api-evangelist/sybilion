@@ -1,0 +1,179 @@
+generated: '2026-08-11'
+method: derived
+source: openapi/sybilion-operational-api-openapi.yml
+enriched_from:
+  - https://sybilion.dev/docs/me
+  - https://sybilion.dev/docs/jobs
+  - https://sybilion.dev/docs/usage
+  - https://sybilion.dev/docs/catalog
+  - https://sybilion.dev/docs/forecasts-artifacts
+note: >-
+  Derived from the 22 component schemas and their $ref edges. There is no shared identifier space
+  across the model — the domain is a job pipeline, not a CRUD resource graph. job_id (uuid) is the
+  only identifier that crosses operations. Catalog ids are small integers, usage/tranche ids are
+  integers, and none of them are prefixed or opaque.
+entities:
+  - name: Account
+    schema: MeResponse
+    operation: 'GET /api/v1/me'
+    id_field: user_id
+    id_format: uuid
+    fields: [user_id, balance_eur_cents, available_eur_cents, api_usage_tier, lifetime_paid_cents, payment_count, has_ever_paid, role, signup_trial, euro_tranches, auto_recharge]
+    note: singleton — always the authenticated caller; there is no account id in any path
+  - name: EuroTranche
+    schema: EuroTranche
+    id_field: id
+    fields: [id, source, initial_eur_cents, remaining_eur_cents, expires_at, created_at]
+    note: expiring credit lot; balance is the sum of remaining tranches
+  - name: AutoRechargeState
+    schema: AutoRechargeState
+    fields: [enabled, below_eur_cents, target_eur_cents, monthly_cap_cents, meter_cents, meter_month, has_stripe_customer]
+    note: has_stripe_customer is the only external-processor reference exposed in the contract
+  - name: ForecastJob
+    schema: JobSummary
+    operations: ['POST /api/v1/forecasts', 'GET /api/v1/forecasts/{id}', 'GET /api/v1/jobs']
+    id_field: job_id
+    id_format: uuid
+    fields: [job_id, pipeline_type, status, created_at, settled, settled_at, eur_cents_final, terminal_reason, run_id, workflow_id]
+    lifecycle: queued -> running -> terminal (settled)
+    note: >-
+      run_id and workflow_id leak the underlying orchestrator's identifiers into the public contract
+      but are never referenced by any other operation.
+  - name: ForecastRequest
+    schema: ForecastRequestV1
+    required: [pipeline_version, frequency, recency_factor, timeseries_metadata, timeseries]
+    fields: [soft_horizon, hard_horizon, backtest, run_baseline, strictly_positive, optimization_budget, max_num_features, trend_num_classes, filters, aux_timeseries]
+    constraints: monthly frequency; 40-120 observations depending on horizon; horizons 1-12; keys must be the first day of the month
+  - name: ForecastArtifact
+    schema: ForecastArtifactMeta
+    operation: 'GET /api/v1/forecasts/{id}/artifacts/{name}'
+    id_field: name
+    fields: [name, href, content_type, size]
+    payload_envelope: '{ "version": "1.1", "data": {...} }'
+    known_names: [external_signals.json]
+    note: name is scoped to its job, not globally unique
+  - name: DriverRequest
+    schema: RecommendRequestV1
+    operation: 'POST /api/v1/drivers'
+    required: [version, recency_factor, timeseries_metadata]
+  - name: DriverItem
+    schema: DriverItemV1
+    id_field: hash_id
+    fields: [driver_name, hash_id, score]
+    note: hash_id is the only stable handle for an external driver series, and no operation accepts it as input
+  - name: AlertsRequest
+    schema: AlertsRequestV1
+    operation: 'POST /api/v1/alerts'
+    required: [metadata, context_enriched]
+    fields: [date_from, date_to, filters]
+  - name: AlertItem
+    schema: AlertItemV1
+    fields: [name, news, pct_change, trending]
+  - name: NewsItem
+    schema: NewsItemV1
+    fields: [title, description, url, source_name, category, published_at, trending]
+  - name: UsageEvent
+    schema: UsageEvent
+    operation: 'GET /api/v1/usage'
+    id_field: id
+    id_format: integer
+    fields: [id, endpoint, units, credits_charged, eur_cents_charged, created_at, async_job_id]
+  - name: Region
+    schema: RegionItemV1
+    operation: 'GET /api/v1/regions'
+    id_field: id
+    id_format: integer 1-9999
+    fields: [id, name, latitude, longitude]
+  - name: Category
+    schema: CategoryItemV1
+    operation: 'GET /api/v1/categories'
+    id_field: id
+    id_format: integer 1-9999
+    fields: [id, name]
+  - name: TimeseriesMetadata
+    schema: TimeseriesMetadata
+    required: [title]
+    fields: [title, description, keywords]
+    note: shared value object across forecasts, drivers and alerts
+  - name: Filters
+    schema: Filters
+    fields: [categories, regions, general_drivers, limit]
+    note: shared value object; filters.limit also drives the worst-case cost ceiling on billed calls
+relationships:
+  - from: Account
+    to: EuroTranche
+    kind: has_many
+    via: euro_tranches
+    evidence: '$ref MeResponse.euro_tranches -> EuroTranche'
+  - from: Account
+    to: AutoRechargeState
+    kind: has_one
+    via: auto_recharge
+    evidence: '$ref MeResponse.auto_recharge -> AutoRechargeState'
+  - from: ForecastJob
+    to: ForecastArtifact
+    kind: has_many
+    via: 'GET /api/v1/forecasts/{id} artifacts[]'
+    evidence: '$ref -> ForecastArtifactMeta'
+  - from: UsageEvent
+    to: ForecastJob
+    kind: belongs_to
+    via: async_job_id
+    evidence: id-reference field; the only cross-entity foreign key in the whole contract
+  - from: ForecastRequest
+    to: TimeseriesMetadata
+    kind: has_one
+    via: timeseries_metadata
+  - from: ForecastRequest
+    to: Filters
+    kind: has_one
+    via: filters
+  - from: DriverRequest
+    to: TimeseriesMetadata
+    kind: has_one
+    via: timeseries_metadata
+  - from: DriverRequest
+    to: Filters
+    kind: has_one
+    via: filters
+  - from: AlertsRequest
+    to: Filters
+    kind: has_one
+    via: filters
+  - from: AlertItem
+    to: NewsItem
+    kind: has_many
+    via: news
+    evidence: '$ref AlertItemV1.news -> NewsItemV1'
+  - from: Filters
+    to: Region
+    kind: has_many
+    via: 'regions[] (integer id reference)'
+    evidence: 'docs/catalog: "the full catalog used by filters.regions[]"'
+    enforced: false
+  - from: Filters
+    to: Category
+    kind: has_many
+    via: 'categories[] (integer id reference)'
+    evidence: 'docs/catalog: "the full catalog used by filters.categories[]"'
+    enforced: false
+  - from: RegionListResponse
+    to: Region
+    kind: has_many
+    via: items
+  - from: CategoryListResponse
+    to: Category
+    kind: has_many
+    via: items
+  - from: JobsPagination
+    to: ForecastJob
+    kind: has_many
+    via: 'GET /api/v1/jobs jobs[]'
+id_prefixes:
+  - { entity: ApiKey, prefix: 'sk_ops_', note: 'credential only; never returned by any operation after creation' }
+summary:
+  entities: 16
+  relationships: 15
+  foreign_keys_between_resources: 1
+  identifier_formats: [uuid, integer, name-scoped-string]
+  subway_render: null

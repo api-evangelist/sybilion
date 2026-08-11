@@ -1,0 +1,107 @@
+generated: '2026-08-11'
+method: derived
+source: mcp/sybilion-mcp.yml + openapi/sybilion-operational-api-openapi.yml
+note: >-
+  Binding is by method+path, NOT by operationId: the published OpenAPI declares no operationId on any
+  of its 11 operations, so there is no id to bind to. Confidence is capped at medium wherever the
+  mapping rests on the tool name plus the provider's own prose rather than an observed inputSchema,
+  because MCP tools/list is OAuth-gated (401) and could not be introspected anonymously.
+surfaces:
+  openapi:
+    file: openapi/sybilion-operational-api-openapi.yml
+    source: https://api.sybilion.dev/openapi.yaml
+    version: 3.0.3
+    operations: 11
+    gated: false
+    note: spec is served anonymously; calling the operations requires a Bearer key
+  mcp:
+    url: https://mcp.sybilion.dev/mcp
+    gated: true
+    gate: OAuth 2.1 authorization_code + PKCE, 401 on anonymous tools/list
+  graphql:
+    present: false
+crosswalk:
+  - tool: submit_forecast
+    category: forecasts
+    rest: ['POST /api/v1/forecasts']
+    binding: rest
+    confidence: high
+    note: >-
+      Named in the provider's own tool-sequence diagram (submit_forecast -> get_forecast ->
+      get_forecast_chart). The REST operation is the only submit surface and returns 202 with a
+      job_id, which matches the documented async pattern exactly. Real input contract is
+      ForecastRequestV1 (pipeline_version, frequency, recency_factor, timeseries_metadata,
+      timeseries, plus one of soft_horizon/hard_horizon).
+  - tool: get_forecast
+    category: forecasts
+    rest: ['GET /api/v1/forecasts/{id}']
+    binding: rest
+    confidence: high
+    note: documented argument { job_id } maps to the path parameter id; response is JobSummary + ForecastArtifactMeta[]
+  - tool: get_forecast_chart
+    category: forecasts
+    rest: ['GET /api/v1/forecasts/{id}/artifacts/{name}']
+    binding: rest
+    confidence: medium
+    note: >-
+      Composite. The tool takes only { job_id } but the REST operation requires an artifact name, so
+      the server is selecting the chart artifact on the caller's behalf. There is no REST operation
+      that returns a chart from a job id alone.
+  - tool: get_forecast_artifact
+    category: forecasts
+    rest: ['GET /api/v1/forecasts/{id}/artifacts/{name}']
+    binding: rest
+    confidence: high
+    note: documented arguments { job_id, artifact_name } map 1:1 onto the two path parameters
+  - tool: get_alerts
+    category: alerts
+    rest: ['POST /api/v1/alerts']
+    binding: rest
+    confidence: high
+    note: synchronous billed call on both surfaces; AlertsRequestV1 requires metadata + context_enriched
+  - tool: list_regions
+    category: catalog
+    rest: ['GET /api/v1/regions']
+    binding: rest
+    confidence: high
+    note: no parameters on either side; returns RegionListResponse
+  - tool: list_categories
+    category: catalog
+    rest: ['GET /api/v1/categories']
+    binding: rest
+    confidence: high
+    note: no parameters on either side; returns CategoryListResponse
+mcp_only: []
+rest_only:
+  - operation: 'POST /api/v1/drivers'
+    capability: drivers
+    note: >-
+      The most notable divergence. Standalone driver ranking (RecommendRequestV1) is a first-class
+      REST endpoint and is headlined on the marketing API page, but the MCP connector exposes no
+      drivers tool — the MCP page instead routes driver attribution through
+      get_forecast_artifact/external_signals.json, i.e. drivers only as a by-product of a forecast.
+      An agent cannot rank drivers without paying for a forecast.
+  - operation: 'GET /api/v1/me'
+    capability: account
+    note: >-
+      Almost certainly reachable via the unnamed account tool the ChatGPT setup instructions refer
+      to ("Check my Sybilion account balance"), but no tool name is published, so it is recorded here
+      rather than in crosswalk[].
+  - operation: 'GET /api/v1/jobs'
+    capability: jobs
+    note: no MCP tool lists prior jobs; the connector's model is one job per conversation turn
+  - operation: 'GET /api/v1/usage'
+    capability: billing
+    note: no MCP tool exposes billing history
+  - operation: 'GET /health'
+    capability: operations
+    note: unauthenticated liveness probe, not agent-relevant
+coverage:
+  tools_named: 7
+  tools_bound: 7
+  tools_unnamed: 1
+  mcp_only: 0
+  rest_operations_total: 11
+  rest_operations_with_a_tool: 6
+  rest_operations_without_a_tool: 5
+  binding_confidence: { high: 6, medium: 1, low: 0 }

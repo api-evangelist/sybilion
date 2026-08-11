@@ -1,0 +1,147 @@
+generated: '2026-08-11'
+method: searched
+source: https://sybilion.dev/docs/errors
+sources:
+  - https://sybilion.dev/docs/errors
+  - https://sybilion.dev/docs/catalog
+  - https://sybilion.dev/docs/alerts
+  - https://sybilion.dev/docs/drivers
+  - openapi/sybilion-operational-api-openapi.yml
+format: proprietary
+rfc9457: false
+note: >-
+  Not RFC 9457. No operation declares application/problem+json — errors are a bare JSON object with
+  an `error` string. Two envelopes are in use and they are NOT interchangeable: ErrorMessage
+  {error, trace_id} for everything, and ValidationErrorResponse {error, details[]} for 422 only.
+  The `error` values are human-readable sentences, not stable machine codes, so an agent cannot
+  branch on them reliably — status code plus substring matching is the only available discriminator,
+  and the docs themselves rely on substring matching to tell the two 429 causes apart.
+envelopes:
+  - name: ErrorMessage
+    fields:
+      error: human-readable message string
+      trace_id: server-issued correlation id, matches the x-trace-id response header
+    example: '{"error":"missing bearer token","trace_id":"d70a10f8cc42cb2770eeb99478486628"}'
+    evidence: observed live on GET https://api.sybilion.dev/api/v1/me without a token, 2026-08-11
+  - name: ValidationErrorResponse
+    fields:
+      error: 'validation_failed'
+      details: 'array of {field, message}'
+    fail_fast: true
+    note: only one detail entry is returned per request
+    example: '{"error":"validation_failed","details":[{"field":"soft_horizon","message":"soft_horizon must be between 1 and 12"}]}'
+problems:
+  - status: 400
+    title: Malformed request
+    causes:
+      - malformed JSON body
+      - invalid query parameter (bad page, limit, sort or order)
+      - JSON type errors caught by the decoder before validation runs
+    remediation: >-
+      Fix the JSON. Note the boundary the docs call out explicitly — passing a string where a boolean
+      is expected (backtest, strictly_positive) returns 400, NOT 422, because the decoder rejects it
+      before the validator runs. Two different envelopes for what looks to a caller like one class of
+      mistake.
+    source_operations:
+      - 'POST /api/v1/forecasts'
+      - 'POST /api/v1/drivers'
+      - 'POST /api/v1/alerts'
+      - 'GET /api/v1/jobs'
+      - 'GET /api/v1/usage'
+  - status: 401
+    title: Missing or invalid bearer token
+    envelope: ErrorMessage
+    observed_body: '{"error":"missing bearer token","trace_id":"..."}'
+    remediation: Check the Authorization header and the sk_ops_ key value.
+    source_operations: [every /api/v1/* operation]
+  - status: 402
+    title: Insufficient available balance
+    envelope: ErrorMessage
+    variants:
+      - operation: 'POST /api/v1/forecasts'
+        body: '{"error":"insufficient available credits for hold"}'
+        cause: available balance is below the estimated maximum cost the API holds before running the job
+      - operation: 'POST /api/v1/drivers'
+        body: '{"error":"insufficient credits"} or {"error":"insufficient credits: need up to N, have M"}'
+        cause: available balance below the worst-case ceiling for the drivers pre-check
+      - operation: 'POST /api/v1/alerts'
+        body: '{"error":"insufficient credits"} or {"error":"insufficient credits: need up to N, have M"}'
+        cause: available balance below the worst-case ceiling for the alerts pre-check
+    remediation: >-
+      Top up, wait for in-flight forecast holds to settle, or reduce filters.limit so the pre-check
+      fits the available balance. Read "credits" in these bodies as available EUR cents.
+  - status: 404
+    title: Not found, not owned, or outside the retention window
+    remediation: >-
+      Three distinct causes share one status with no discriminator — the resource does not exist, it
+      belongs to another caller, or it has aged out of the post-settlement visibility window. An
+      agent cannot tell "you never had this" from "this expired".
+    source_operations:
+      - 'GET /api/v1/forecasts/{id}'
+      - 'GET /api/v1/forecasts/{id}/artifacts/{name}'
+  - status: 409
+    title: Job not yet completed
+    remediation: Keep polling GET /api/v1/forecasts/{id} until status is terminal before downloading artifacts.
+    source_operations: ['GET /api/v1/forecasts/{id}/artifacts/{name}']
+  - status: 413
+    title: Payload too large
+    limits:
+      forecast_body: 2 MiB
+      artifact_stream: 100 MiB
+    source_operations:
+      - 'POST /api/v1/forecasts'
+      - 'POST /api/v1/drivers'
+      - 'POST /api/v1/alerts'
+  - status: 422
+    title: Validation failed
+    envelope: ValidationErrorResponse
+    remediation: Inspect details[0]; only the first failing field is reported per request.
+    source_operations:
+      - 'POST /api/v1/forecasts'
+      - 'POST /api/v1/drivers'
+      - 'POST /api/v1/alerts'
+  - status: 429
+    title: Rate limit or concurrency cap exceeded
+    variants:
+      - cause: per-minute request cap
+        signal: message contains "rate limit"
+      - cause: per-minute cap on synchronous billed calls
+        applies_to: ['POST /api/v1/drivers', 'POST /api/v1/alerts']
+      - cause: concurrent forecast job cap
+        signal: message contains "too many concurrent jobs"
+        applies_to: ['POST /api/v1/forecasts']
+        note: evaluated BEFORE the balance hold succeeds
+    remediation: >-
+      Back off and retry. There is no Retry-After header and no rate-limit headers of any kind, so
+      the backoff interval must be guessed.
+    source_operations:
+      - 'POST /api/v1/forecasts'
+      - 'POST /api/v1/drivers'
+      - 'POST /api/v1/alerts'
+      - 'GET /api/v1/jobs'
+  - status: 502
+    title: Upstream transport failure
+    remediation: Retry with the SAME X-Request-ID so the retry does not double-bill on success.
+    source_operations:
+      - 'POST /api/v1/drivers'
+      - 'POST /api/v1/alerts'
+      - 'GET /api/v1/regions'
+      - 'GET /api/v1/categories'
+  - status: 503
+    title: Backend integration unavailable or feature not enabled
+    remediation: >-
+      Ambiguous by design — the docs say a 503 on drivers/alerts/catalog may mean the feature is not
+      enabled for the account rather than an outage, and direct the caller to contact support. An
+      agent should not treat this as transient without checking.
+    source_operations:
+      - 'POST /api/v1/forecasts'
+      - 'POST /api/v1/drivers'
+      - 'POST /api/v1/alerts'
+      - 'GET /api/v1/regions'
+      - 'GET /api/v1/categories'
+      - 'GET /health'
+summary:
+  statuses: 10
+  machine_readable_codes: false
+  stable_error_identifiers: false
+  correlation_id: trace_id / x-trace-id

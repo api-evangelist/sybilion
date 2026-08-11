@@ -1,0 +1,114 @@
+generated: '2026-08-11'
+method: searched
+status: published
+source: https://sybilion.dev/docs/integrations
+server:
+  name: sybilion
+  transport: http
+  url: https://mcp.sybilion.dev/mcp
+  protocol: Streamable HTTP (MCP)
+authentication:
+  type: oauth2
+  flow: authorization_code
+  pkce: [S256, plain]
+  dynamic_client_registration: true
+  registration_endpoint: https://mcp.sybilion.dev/oauth/register
+  authorization_endpoint: https://mcp.sybilion.dev/oauth/authorize
+  token_endpoint: https://mcp.sybilion.dev/oauth/token
+  revocation_endpoint: https://mcp.sybilion.dev/oauth/revoke
+  jwks_uri: https://sybilion.eu.auth0.com/.well-known/jwks.json
+  scopes: [openid, profile, email, offline_access]
+  discovery:
+    authorization_server: /.well-known/oauth-authorization-server
+    protected_resource: /.well-known/oauth-protected-resource
+  note: >-
+    No API key is used on the MCP surface — the docs are explicit that the client runs the browser
+    approval flow. This is a different credential from the REST API's sk_ops_ bearer key.
+introspection:
+  attempted: true
+  method: 'POST {"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+  http_status: 401
+  body: no bearer token
+  www_authenticate: 'Bearer resource_metadata="https://mcp.sybilion.dev/.well-known/oauth-protected-resource/mcp"'
+  result: gated
+  note: >-
+    tools/list requires an authenticated session, so live inputSchemas could not be captured. The
+    tool NAMES below are published by the provider on its own MCP marketing page and in the docs;
+    they are recorded as names + descriptions only. Input schemas require authenticated
+    introspection — the argument shapes shown for the three retrieval tools are the ones the docs
+    themselves publish in the "If the agent cannot retrieve forecast data" troubleshooting table.
+tools:
+  - name: submit_forecast
+    description: Submit a monthly time series for an asynchronous forecast job; returns a job id.
+    kind: write
+    source_operation: openapi/sybilion-operational-api-openapi.yml#POST /api/v1/forecasts
+    source: https://www.sybilion.com/mcp
+  - name: get_forecast
+    description: Poll a forecast job until it settles and return status plus the artifact list.
+    kind: read
+    arguments_documented: { job_id: string (uuid) }
+    source_operation: openapi/sybilion-operational-api-openapi.yml#GET /api/v1/forecasts/{id}
+    source: https://sybilion.dev/docs/integrations
+  - name: get_forecast_chart
+    description: Return the completed forecast as a ready-to-render chart with history, median and 80%/90% bands.
+    kind: read
+    arguments_documented: { job_id: string (uuid) }
+    source_operation: openapi/sybilion-operational-api-openapi.yml#GET /api/v1/forecasts/{id}/artifacts/{name}
+    source: https://sybilion.dev/docs/integrations
+  - name: get_forecast_artifact
+    description: Download a named forecast output file (e.g. external_signals.json for driver attribution).
+    kind: read
+    arguments_documented: { job_id: string (uuid), artifact_name: string }
+    source_operation: openapi/sybilion-operational-api-openapi.yml#GET /api/v1/forecasts/{id}/artifacts/{name}
+    source: https://sybilion.dev/docs/integrations
+  - name: get_alerts
+    description: Return macroeconomic series moving against the caller's context right now, ranked by relevance, each with pct change and the news behind it.
+    kind: write
+    source_operation: openapi/sybilion-operational-api-openapi.yml#POST /api/v1/alerts
+    source: https://www.sybilion.com/mcp
+    note: billed synchronous call despite reading like a read
+  - name: list_regions
+    description: Browse valid region ids for the filters.regions[] catalog filter.
+    kind: read
+    source_operation: openapi/sybilion-operational-api-openapi.yml#GET /api/v1/regions
+    source: https://www.sybilion.com/mcp
+  - name: list_categories
+    description: Browse valid category ids for the filters.categories[] catalog filter.
+    kind: read
+    source_operation: openapi/sybilion-operational-api-openapi.yml#GET /api/v1/categories
+    source: https://www.sybilion.com/mcp
+undisclosed_tools:
+  - area: account
+    note: >-
+      The ChatGPT setup instructions say the connector lists "forecast, alerts, regions, categories,
+      and account related tools", and an example prompt is "Check my Sybilion account balance". An
+      account tool therefore exists but its name is never printed anywhere public, so it is recorded
+      as an unnamed surface rather than guessed. It most likely fronts GET /api/v1/me.
+clients_documented:
+  - name: ChatGPT
+    requirement: Developer Mode + Plus/Pro/Business/Enterprise/Edu plan
+    setup: Settings -> Apps -> Advanced settings -> Create App, Connector URL https://mcp.sybilion.dev/mcp, OAuth
+    note: write-tool calls require per-call approval unless remembered for the session
+  - name: Claude
+    requirement: Pro or Max for individuals; Owner adds it org-wide for Team/Enterprise
+    setup: Customize -> Connectors -> Add custom connector -> https://mcp.sybilion.dev/mcp
+  - name: TradingView Remix
+    requirement: Chrome extension with a built-in MCP client
+    setup: Remix side panel -> Settings -> MCP Servers -> add https://mcp.sybilion.dev/mcp with OAuth
+behaviour:
+  async_polling: >-
+    Forecast jobs are asynchronous. The connector paces the polling itself — submit_forecast returns
+    a job id, the server polls get_forecast until the job completes, then the chart and artifacts are
+    retrievable. Runs take tens of seconds to a few minutes.
+  known_client_issue: >-
+    The docs warn that some MCP clients pass tool arguments as a plain string instead of a structured
+    dict, and publish the required argument shapes for get_forecast, get_forecast_chart and
+    get_forecast_artifact as the workaround.
+  scope_limit: >-
+    Provider states plainly that only MONTHLY business time series are supported and that
+    sub-monthly frequencies are roadmap, not in the public connector.
+summary:
+  tools_named: 7
+  tools_bound_to_rest: 7
+  tools_unnamed: 1
+  live_schema_available: false

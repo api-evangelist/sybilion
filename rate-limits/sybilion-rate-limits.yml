@@ -1,0 +1,86 @@
+generated: '2026-08-11'
+method: searched
+source: https://sybilion.dev/docs/errors
+sources:
+  - https://sybilion.dev/docs/errors
+  - https://sybilion.dev/docs/tiers
+  - openapi/sybilion-operational-api-openapi.yml
+  - live headers observed on api.sybilion.dev 2026-08-11
+note: >-
+  Three independent caps are documented by SHAPE, and none by VALUE. The docs say every number is
+  tier-dependent and shown only in the Developers Portal, so limit_count is an honest 0 — the caps
+  are real, the figures are behind the login. Worse for an agent: there are NO rate-limit response
+  headers at all. Headers were observed live on two anonymous responses (401 on /api/v1/me and 405
+  on /health) and the only Sybilion-set header is x-trace-id; the rest are Cloudflare and CORS. With
+  no RateLimit-*, no X-RateLimit-*, and no Retry-After, a client that hits 429 has to guess its
+  backoff, and has to substring-match the message body to learn WHICH cap it hit.
+limits:
+  - scope: per-key/per-account
+    name: Requests per minute (general)
+    window: 60s
+    limit: null
+    burst: null
+    applies_to: every authenticated /api/v1/* request other than forecasts and drivers
+    tier_dependent: true
+    status_on_exhaustion: 429
+    source: https://sybilion.dev/docs/errors
+  - scope: per-key/per-account
+    name: Requests per minute (synchronous billed)
+    window: 60s
+    limit: null
+    burst: null
+    applies_to: ['POST /api/v1/drivers', 'POST /api/v1/alerts']
+    tier_dependent: true
+    status_on_exhaustion: 429
+    signal: 'message contains "rate limit"'
+    source: https://sybilion.dev/docs/errors
+  - scope: per-account
+    name: Concurrent forecast jobs
+    window: concurrent
+    limit: null
+    burst: null
+    applies_to: ['POST /api/v1/forecasts']
+    counts: in-flight jobs with status queued or running
+    tier_dependent: true
+    status_on_exhaustion: 429
+    signal: 'message contains "too many concurrent jobs"'
+    evaluated: before the balance hold is taken
+    source: https://sybilion.dev/docs/errors
+response_headers:
+  rate_limit_headers: none
+  ratelimit_draft: false
+  x_ratelimit: false
+  retry_after: false
+  observed_headers_on_429: not observed (429 not reproducible anonymously)
+  observed_headers_anonymous:
+    - x-trace-id
+    - access-control-allow-headers
+    - access-control-allow-methods
+    - access-control-max-age
+    - cf-cache-status
+    - cf-ray
+    - server
+  evidence:
+    - { url: 'https://api.sybilion.dev/api/v1/me', status: 401, note: 'no rate-limit header of any kind' }
+    - { url: 'https://api.sybilion.dev/health', status: 405, note: 'HEAD not allowed; Allow: GET; no rate-limit header' }
+status_code: 429
+discrimination:
+  method: substring match on the error message
+  machine_readable: false
+  note: >-
+    The docs themselves instruct callers to distinguish per-minute exhaustion from concurrency
+    exhaustion by reading the message text, because both return 429 with the same envelope.
+interaction_with_billing: >-
+  The concurrency cap and the balance hold are separate gates. A caller can get 429 for concurrency
+  with a healthy balance, or 402 on available balance with zero running jobs while holds settle.
+other_caps:
+  - { kind: request body, value: 2 MiB, applies_to: 'POST /api/v1/forecasts', status: 413 }
+  - { kind: artifact stream, value: 100 MiB, applies_to: 'GET /api/v1/forecasts/{id}/artifacts/{name}', status: 413 }
+  - { kind: pagination limit, value: '1-200 (default 50)', applies_to: ['GET /api/v1/jobs', 'GET /api/v1/usage'], status: 400 }
+limit_count: 0
+summary:
+  documented_cap_types: 3
+  published_numeric_limits: 0
+  rate_limit_response_headers: 0
+  retry_after: false
+  where_the_numbers_live: Developers Portal Tiers page (Auth0 login required)

@@ -1,0 +1,105 @@
+generated: '2026-08-11'
+method: derived
+source: openapi/sybilion-operational-api-openapi.yml
+sources:
+  - openapi/sybilion-operational-api-openapi.yml
+  - well-known/sybilion-oauth-authorization-server.json
+  - well-known/sybilion-oauth-protected-resource.json
+  - https://sybilion.dev/docs/errors
+  - https://www.sybilion.com/legal/privacy-policy
+note: >-
+  Standards posture splits cleanly by surface. The MCP server is standards-forward — RFC 8414,
+  RFC 9728, RFC 7591, PKCE. The REST API is deliberately plain: bearer key, page-number pagination,
+  ad-hoc error strings, no RFC 9457, no conditional requests, no cache validators. No certification
+  or compliance program (SOC 2, ISO 27001) is published anywhere on either domain.
+standards:
+  - id: openapi-3.0
+    conforms: true
+    evidence: 'openapi: 3.0.3 served at https://api.sybilion.dev/openapi.yaml, 11 operations, 22 component schemas'
+  - id: oauth2
+    conforms: true
+    scope: mcp
+    evidence: authorization_code + refresh_token grants advertised at /.well-known/oauth-authorization-server on mcp.sybilion.dev
+  - id: rfc8414-authorization-server-metadata
+    conforms: true
+    scope: mcp
+    evidence: 'HTTP 200 application/json at https://mcp.sybilion.dev/.well-known/oauth-authorization-server'
+  - id: rfc9728-protected-resource-metadata
+    conforms: true
+    scope: mcp
+    evidence: 'HTTP 200 at /.well-known/oauth-protected-resource, and the 401 WWW-Authenticate challenge carries resource_metadata'
+  - id: rfc7591-dynamic-client-registration
+    conforms: true
+    scope: mcp
+    evidence: 'registration_endpoint https://mcp.sybilion.dev/oauth/register advertised in AS metadata'
+  - id: rfc7636-pkce
+    conforms: true
+    scope: mcp
+    evidence: 'code_challenge_methods_supported: [S256, plain]'
+    note: advertising `plain` alongside S256 is a downgrade opportunity; S256-only is the current recommendation
+  - id: oidc-discovery
+    conforms: true
+    scope: portal
+    evidence: 'HTTP 200 at https://auth0.sybilion.com/.well-known/openid-configuration (Auth0 custom domain)'
+  - id: mcp
+    conforms: true
+    evidence: 'hosted Streamable HTTP server at https://mcp.sybilion.dev/mcp; anonymous tools/list returns 401 with an MCP-shaped OAuth challenge'
+  - id: rfc6750-bearer-token
+    conforms: true
+    evidence: 'Authorization: Bearer on every /api/v1/* operation; securitySchemes bearerAuth type http scheme bearer'
+  - id: rfc9457-problem-details
+    conforms: false
+    evidence: 'no operation declares application/problem+json; errors are {error, trace_id} / {error, details[]}'
+  - id: rfc8594-sunset-header
+    conforms: false
+    evidence: no deprecation or sunset policy published; no operation marked deprecated
+  - id: rfc9116-security-txt
+    conforms: false
+    evidence: '/.well-known/security.txt returns 404 on api.sybilion.dev and mcp.sybilion.dev, and an HTML SPA shell on sybilion.dev'
+  - id: rfc8615-well-known-agent-card
+    conforms: false
+    evidence: '/.well-known/agent-card.json and /.well-known/agent.json miss on every host'
+  - id: rfc7233-range-requests
+    conforms: true
+    evidence: 'GET /api/v1/forecasts/{id}/artifacts/{name} declares a 206 response to a Range request'
+  - id: idempotency-key
+    conforms: partial
+    evidence: 'X-Request-ID documented on POST /api/v1/drivers and /api/v1/alerts to deduplicate billing on retry'
+    note: >-
+      Not the IETF Idempotency-Key draft header, and the guarantee is billing dedupe rather than
+      response replay. Not offered on POST /api/v1/forecasts at all.
+  - id: pagination
+    conforms: true
+    style: page-number
+    evidence: 'page/limit/sort/order query params and a pagination{page,limit,total,total_pages,sort,order} envelope on GET /api/v1/jobs and /api/v1/usage'
+  - id: json-api
+    conforms: false
+  - id: odata
+    conforms: false
+  - id: graphql
+    conforms: false
+    evidence: no /graphql surface on any host
+  - id: asyncapi
+    conforms: false
+    evidence: >-
+      No event surface. The marketing API page says drivers and forecast bands can be fed into
+      downstream models "through the API or webhooks", but no webhook is documented anywhere in
+      /docs, no webhook or callback appears in the OpenAPI, and no subscription endpoint exists.
+      Recorded as a marketing claim with no shipped surface — NOT as an event API.
+  - id: grpc
+    conforms: false
+  - id: gdpr
+    conforms: unknown
+    evidence: 'privacy policy published at https://www.sybilion.com/legal/privacy-policy (HTTP 200); EU-based operation (Auth0 eu tenant, EUR-denominated billing)'
+    note: a privacy policy is not a compliance claim; no DPA, subprocessor list or GDPR statement page was found
+  - id: soc2
+    conforms: false
+    evidence: 'no trust center; trust.sybilion.com does not resolve; /security and /legal/security return 404 on sybilion.com'
+  - id: iso27001
+    conforms: false
+    evidence: same probe as soc2
+  - id: pci-dss
+    conforms: false
+    note: billing runs through Stripe (has_stripe_customer field in the MeResponse schema); no PCI claim is made by Sybilion itself
+certifications_published: []
+compliance_program_published: false

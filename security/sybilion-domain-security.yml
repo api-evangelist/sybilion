@@ -1,0 +1,77 @@
+generated: '2026-08-11'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+note: >-
+  Baseline written by 0-working/probe-domain-security.py (sybilion.dev tree only), then extended by
+  hand with the sybilion.com corporate/marketing domain, the auth0.sybilion.com identity host, and
+  observed HSTS headers — none of which are reachable from apis.yml as it stood. Headline: TLS 1.3
+  everywhere and HSTS on the two Cloudflare-fronted web properties, but the API and MCP hosts return
+  NO HSTS header at all, and neither registrable domain has DNSSEC, CAA, or SPF. sybilion.dev — the
+  domain that serves the API, the MCP server and the developer portal — has no DMARC record either.
+hosts:
+- host: sybilion.dev
+  role: developer portal (SPA)
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Nov  4 11:00:55 2026 GMT
+  hsts: false
+- host: api.sybilion.dev
+  role: REST API
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Nov  4 11:00:55 2026 GMT
+  hsts: false
+  hsts_observed: 'no strict-transport-security header on 401 /api/v1/me or 405 /health, 2026-08-11'
+- host: mcp.sybilion.dev
+  role: hosted MCP server
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Nov  4 11:00:55 2026 GMT
+  hsts: false
+  hsts_observed: 'no strict-transport-security header on the 401 tools/list challenge, 2026-08-11'
+- host: www.sybilion.com
+  role: corporate / marketing site (Webflow behind Cloudflare)
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Oct  8 13:09:26 2026 GMT
+  hsts: true
+  hsts_max_age: 31536000
+  hsts_include_subdomains: false
+  note: 'https://sybilion.com/ redirects to https://www.sybilion.com/ (200)'
+- host: auth0.sybilion.com
+  role: Auth0 custom domain — portal login and MCP OAuth issuer
+  https: true
+  hsts: true
+  hsts_max_age: 31536000
+  hsts_include_subdomains: true
+domains:
+- domain: sybilion.dev
+  role: product domain (API, MCP, docs, portal)
+  dnssec: false
+  ds_record: false
+  caa: []
+  spf: false
+  dmarc: false
+  dmarc_policy: null
+  txt_records_present: [google-site-verification]
+- domain: sybilion.com
+  role: corporate domain (website, email, Auth0 custom domain)
+  dnssec: false
+  ds_record: false
+  caa: []
+  spf: false
+  dmarc: true
+  dmarc_policy: quarantine
+  dmarc_record: 'v=DMARC1; p=quarantine; rua=mailto:<redacted>@dmarc-reports.cloudflare.net;'
+  txt_records_present: [MS=, google-site-verification x2, anthropic-domain-verification, kok6w5nrvl]
+  note: >-
+    DMARC is at p=quarantine with Cloudflare aggregate reporting, but there is NO v=spf1 record on
+    the apex, so DMARC can only pass via DKIM alignment. support@sybilion.com is the published
+    support and security-report address, which makes the missing SPF record worth flagging.
+findings:
+  - { severity: low, item: 'no CAA records on either domain — any CA may issue' }
+  - { severity: low, item: 'no DNSSEC on either domain' }
+  - { severity: medium, item: 'no HSTS on api.sybilion.dev or mcp.sybilion.dev, the two credential-bearing hosts' }
+  - { severity: medium, item: 'no SPF on sybilion.com despite DMARC p=quarantine' }
+  - { severity: medium, item: 'no DMARC at all on sybilion.dev' }
+  - { severity: info, item: 'TLS 1.3 on every host; certificates valid through Oct/Nov 2026' }

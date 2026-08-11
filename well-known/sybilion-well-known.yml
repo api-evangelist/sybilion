@@ -1,0 +1,115 @@
+generated: '2026-08-11'
+method: probed
+source: live GET of /.well-known/* on every apis.yml host
+note: >-
+  Three real documents were served. The MCP host publishes both RFC 8414 authorization-server
+  metadata and RFC 9728 protected-resource metadata, which is what lets an MCP client complete the
+  OAuth flow without any out-of-band configuration. The Auth0 custom domain auth0.sybilion.com
+  serves full OIDC discovery for the Developers Portal session. The API host api.sybilion.dev
+  serves nothing under /.well-known/ (clean 404s from the Go router). IMPORTANT — the marketing/
+  portal host sybilion.dev answers HTTP 200 with the same 10,864-byte single-page-app shell for
+  EVERY /.well-known/* path probed; those are soft 404s, not documents, and are recorded as misses.
+hosts:
+  - host: mcp.sybilion.dev
+    documents:
+      - path: /.well-known/oauth-authorization-server
+        status: 200
+        content_type: application/json
+        file: sybilion-oauth-authorization-server.json
+        spec: RFC 8414
+      - path: /.well-known/oauth-protected-resource
+        status: 200
+        content_type: application/json
+        file: sybilion-oauth-protected-resource.json
+        spec: RFC 9728
+      - path: /.well-known/oauth-protected-resource/mcp
+        status: 200
+        content_type: application/json
+        spec: RFC 9728
+        note: advertised in the WWW-Authenticate challenge on POST /mcp; same body as the root resource doc
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: auth0.sybilion.com
+    note: Auth0 custom domain backing the Developers Portal login and the MCP OAuth flow
+    documents:
+      - path: /.well-known/openid-configuration
+        status: 200
+        content_type: application/json
+        file: sybilion-openid-configuration.json
+        spec: OpenID Connect Discovery 1.0
+      - path: /.well-known/oauth-authorization-server
+        status: 200
+        content_type: application/json
+        note: identical body to the OIDC discovery document
+  - host: api.sybilion.dev
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: sybilion.dev
+    note: >-
+      SPA catch-all. Every path below returned 200 with the identical 10,864-byte HTML shell
+      titled "Sybilion Developers Portal". Treated as a MISS, not a hit.
+    documents:
+      - path: /.well-known/security.txt
+        status: 200
+        content_type: text/html
+        hit: false
+      - path: /.well-known/openid-configuration
+        status: 200
+        content_type: text/html
+        hit: false
+      - path: /.well-known/oauth-authorization-server
+        status: 200
+        content_type: text/html
+        hit: false
+      - path: /.well-known/oauth-protected-resource
+        status: 200
+        content_type: text/html
+        hit: false
+      - path: /.well-known/api-catalog
+        status: 200
+        content_type: text/html
+        hit: false
+      - path: /.well-known/ai-plugin.json
+        status: 200
+        content_type: text/html
+        hit: false
+      - path: /.well-known/agent-card.json
+        status: 200
+        content_type: text/html
+        hit: false
+      - path: /.well-known/agent.json
+        status: 200
+        content_type: text/html
+        hit: false
+summary:
+  paths_probed: 27
+  real_documents: 4
+  soft_200_html_shells: 8
+  security_txt: false
+  api_catalog: false
+  agent_card: false

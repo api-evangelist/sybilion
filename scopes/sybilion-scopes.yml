@@ -1,0 +1,60 @@
+generated: '2026-08-11'
+method: probed
+source: https://mcp.sybilion.dev/.well-known/oauth-authorization-server
+note: >-
+  The OpenAPI declares no oauth2 security scheme — the REST API is bearer-key only, and
+  derive-oauth-scopes.py correctly found zero. The OAuth surface belongs entirely to the MCP server,
+  and its scopes were read from the live RFC 8414 authorization-server metadata document, not from
+  the docs (the docs never name a scope at all). These are the four standard OIDC/OAuth scopes; there
+  are NO Sybilion-specific resource scopes, so the token is not least-privilege — an approved MCP
+  client can reach every tool the connector exposes, including the two billed write tools
+  (submit_forecast, get_alerts). Consent is per-connection, not per-capability.
+docs: null
+surface: mcp
+schemes:
+  - name: mcp-oauth
+    type: oauth2
+    applies_to: https://mcp.sybilion.dev/mcp
+    source: https://mcp.sybilion.dev/.well-known/oauth-authorization-server
+    issuer: https://mcp.sybilion.dev
+    flows:
+      - flow: authorizationCode
+        authorizationUrl: https://mcp.sybilion.dev/oauth/authorize
+        tokenUrl: https://mcp.sybilion.dev/oauth/token
+        refreshUrl: https://mcp.sybilion.dev/oauth/token
+        pkce: [S256, plain]
+    grant_types: [authorization_code, refresh_token]
+    token_endpoint_auth_methods: [none, client_secret_post]
+    revocation_endpoint: https://mcp.sybilion.dev/oauth/revoke
+    registration_endpoint: https://mcp.sybilion.dev/oauth/register
+    dynamic_client_registration: true
+    jwks_uri: https://sybilion.eu.auth0.com/.well-known/jwks.json
+scopes:
+  - scope: openid
+    description: Standard OIDC scope requesting an ID token for the approving user.
+    flows: [authorizationCode]
+    sources: ['https://mcp.sybilion.dev/.well-known/oauth-authorization-server']
+    resource_specific: false
+  - scope: profile
+    description: Standard OIDC scope for basic profile claims.
+    flows: [authorizationCode]
+    sources: ['https://mcp.sybilion.dev/.well-known/oauth-authorization-server']
+    resource_specific: false
+  - scope: email
+    description: Standard OIDC scope for the approving user's email address.
+    flows: [authorizationCode]
+    sources: ['https://mcp.sybilion.dev/.well-known/oauth-authorization-server']
+    resource_specific: false
+  - scope: offline_access
+    description: >-
+      Standard OAuth scope requesting a refresh token so the MCP client can keep calling after the
+      access token expires without a second browser approval.
+    flows: [authorizationCode]
+    sources: ['https://mcp.sybilion.dev/.well-known/oauth-authorization-server']
+    resource_specific: false
+summary:
+  scopes_total: 4
+  resource_scopes: 0
+  identity_scopes: 4
+  least_privilege: false
+  rest_api_uses_oauth: false

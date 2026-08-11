@@ -1,0 +1,101 @@
+generated: '2026-08-11'
+method: searched
+source: https://sybilion.dev/docs/tiers
+sources:
+  - https://sybilion.dev/docs/tiers
+  - https://sybilion.dev/docs/me
+  - https://sybilion.dev/docs/usage
+  - https://sybilion.dev/docs/errors
+note: >-
+  Five named tiers are published; NOT ONE PRICE IS. There is no pricing page anywhere on either
+  domain — https://www.sybilion.com/pricing returns 404 and https://sybilion.dev/pricing returns the
+  SPA shell. The Tiers doc says outright that "your current tier and its live limits are shown in
+  the Developers Portal Tiers Page", i.e. every number sits behind the Auth0 login. A prospective
+  integrator cannot learn what a forecast costs, what a tier costs, or what any tier's limits are
+  without signing up. What IS public is the billing MODEL, captured below, because it is legible
+  from the API contract itself.
+pricing_page: null
+pricing_page_probed:
+  - { url: 'https://www.sybilion.com/pricing', status: 404 }
+  - { url: 'https://sybilion.dev/pricing', status: 200, verdict: 'SPA shell, no pricing content' }
+model:
+  type: prepaid-balance
+  currency: EUR
+  unit: integer EUR cents
+  metering: per billed event (one usage_event row per async settlement or synchronous endpoint charge)
+  balance_fields: [balance_eur_cents, available_eur_cents, lifetime_paid_cents]
+  holds: >-
+    POST /api/v1/forecasts reserves an estimated maximum cost as a hold before running; the hold is
+    released and replaced by the actual charge at settlement. available_eur_cents = balance minus
+    active holds.
+  pre_check: >-
+    POST /api/v1/drivers and POST /api/v1/alerts run a worst-case-ceiling pre-check and return 402
+    with "need up to N, have M" when the available balance cannot cover it. filters.limit drives the
+    ceiling.
+  credit_expiry: >-
+    Balance is held as EuroTranche lots with initial_eur_cents, remaining_eur_cents and expires_at —
+    credits expire, though no expiry period is published.
+  auto_recharge:
+    exposed: true
+    fields: [enabled, below_eur_cents, target_eur_cents, monthly_cap_cents, meter_cents, meter_month]
+    processor: Stripe (has_stripe_customer)
+  trial:
+    exposed: true
+    field: signup_trial
+    terms: not published
+  billed_endpoints: ['POST /api/v1/forecasts', 'POST /api/v1/drivers', 'POST /api/v1/alerts']
+  free_endpoints: ['GET /api/v1/me', 'GET /api/v1/jobs', 'GET /api/v1/usage', 'GET /api/v1/regions', 'GET /api/v1/categories', 'GET /api/v1/forecasts/{id}', 'GET /api/v1/forecasts/{id}/artifacts/{name}', 'GET /health']
+plans:
+  - name: Free
+    price: null
+    currency: EUR
+    billing_period: null
+    audience: New accounts trying the API.
+    included_quota: not published
+    overage: not published
+    limits: not published (per-minute general cap, per-minute sync-billed cap, concurrent forecast jobs — values portal-only)
+    self_serve: true
+  - name: Starter
+    price: null
+    currency: EUR
+    billing_period: null
+    audience: Active developers running small integrations.
+    included_quota: not published
+    limits: not published
+    self_serve: true
+    upgrade: automatic as more credits are purchased
+  - name: Pro
+    price: null
+    currency: EUR
+    billing_period: null
+    audience: Teams running steady production workloads.
+    included_quota: not published
+    limits: not published
+    self_serve: true
+    upgrade: automatic as more credits are purchased
+  - name: Growth
+    price: null
+    currency: EUR
+    billing_period: null
+    audience: High-volume integrations.
+    included_quota: not published
+    limits: not published
+    self_serve: true
+    upgrade: automatic as more credits are purchased
+  - name: Enterprise
+    price: null
+    currency: EUR
+    billing_period: null
+    audience: Contracted customers with custom limits, SLAs, and support.
+    included_quota: custom
+    limits: custom
+    self_serve: false
+    obtain: contact sales with use case and expected volume
+plan_count: 5
+prices_published: 0
+summary:
+  named_tiers: 5
+  tiers_with_a_published_price: 0
+  public_pricing_page: false
+  tier_movement: automatic on credit purchase for Free/Starter/Pro/Growth; sales-gated for Enterprise
+  api_exposed_tier_field: api_usage_tier (integer, on GET /api/v1/me)

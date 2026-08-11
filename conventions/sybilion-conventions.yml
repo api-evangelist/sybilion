@@ -1,0 +1,186 @@
+generated: '2026-08-11'
+method: searched
+source: https://sybilion.dev/docs/using-curl
+sources:
+  - https://sybilion.dev/docs/authentication
+  - https://sybilion.dev/docs/errors
+  - https://sybilion.dev/docs/jobs
+  - https://sybilion.dev/docs/usage
+  - https://sybilion.dev/docs/using-curl
+  - openapi/sybilion-operational-api-openapi.yml
+  - live response headers observed on api.sybilion.dev 2026-08-11
+authentication:
+  style: bearer
+  header: 'Authorization: Bearer <token>'
+  credentials:
+    - kind: api_key
+      prefix: sk_ops_
+      issued_at: Developers Portal -> API keys
+      shown_once: true
+      revocable: true
+      env_var: SYBILION_API_TOKEN
+    - kind: session_token
+      issuer: Auth0 (auth0.sybilion.com)
+      note: dashboard session access token, accepted on the same header
+    - kind: oauth2
+      surface: MCP only
+      note: browser approval flow; no API key is pasted into an MCP client config
+  see: authentication/sybilion-authentication.yml
+idempotency:
+  supported: true
+  header: X-Request-ID
+  scope: synchronous billed calls (POST /api/v1/drivers, POST /api/v1/alerts)
+  semantics: >-
+    "Pass a stable X-Request-ID header on each retry to deduplicate billing on success." The key
+    protects the CHARGE, not the response body — it is a billing-dedupe key, not a full RFC-style
+    idempotent-replay key, and the docs do not promise a cached response for a repeat of a
+    successful call.
+  retention: not published
+  generation: caller-supplied; the docs example uses `uuidgen`
+  also_used_for: >-
+    502 remediation. Both the drivers and alerts error tables say "Retry with the same X-Request-ID"
+    on an upstream transport failure, which is the whole point of the header.
+  not_applicable_to: >-
+    POST /api/v1/forecasts. Forecast submission is asynchronous and is metered by a balance HOLD
+    rather than an immediate charge, and the docs never mention X-Request-ID on it. A retried
+    forecast submit will create a second job and a second hold.
+  source: https://sybilion.dev/docs/using-curl
+pagination:
+  style: page-number
+  applies_to: ['GET /api/v1/jobs', 'GET /api/v1/usage']
+  request_params:
+    page: { default: 1, note: 1-based index }
+    limit: { default: 50, range: 1-200, note: 'invalid value returns 400' }
+    sort: { jobs: created_at, usage: id, allowed_usage: [id, created_at, eur_cents_charged, credits_charged, units] }
+    order: { default: desc, allowed: [asc, desc] }
+  response_envelope: pagination
+  response_fields: [page, limit, total, total_pages, sort, order]
+  termination: client stops when page == pagination.total_pages
+  sdk_helpers:
+    python: [iter_jobs_pages, iter_usage_pages]
+    go: [ForEachJobsPage, ForEachUsagePage]
+    java: [forEachJobsPage, forEachUsagePage]
+    typescript: async-generator pagination
+  cursors: false
+  note: >-
+    No cursor or opaque continuation token. Deep pagination over a mutating job list is therefore
+    subject to page drift; the docs do not address it.
+filtering:
+  jobs: [status, pipeline_type]
+  catalog_filters:
+    fields: ['filters.regions[]', 'filters.categories[]']
+    values_from: ['GET /api/v1/regions', 'GET /api/v1/categories']
+    validation: integer range 1-9999 only; unknown ids are not rejected
+    note: >-
+      Explicitly discovery-only. The catalog endpoints exist so a caller can look up valid ids, but
+      the API enforces nothing beyond the integer range, so a wrong id fails silently rather than
+      loudly.
+field_expansion:
+  supported: false
+sparse_fieldsets:
+  supported: false
+metadata:
+  user_defined: false
+  note: >-
+    timeseries_metadata (title, description, keywords) is not a free-form metadata bag — it is a
+    required semantic input the model uses to match the caller's series against external drivers.
+request_tracing:
+  response_header: x-trace-id
+  observed: true
+  observed_on: 'GET https://api.sybilion.dev/api/v1/me (401) and /health (405), 2026-08-11'
+  error_body_field: trace_id
+  note: >-
+    Every response carries x-trace-id and every error body echoes the same value in trace_id
+    (schema ErrorMessage). This is the single best runtime debugging signal the API offers and it is
+    NOT documented anywhere in the docs — it was found by observation.
+  request_header: X-Request-ID
+  correlation: >-
+    Caller-supplied X-Request-ID (idempotency) and server-issued x-trace-id (tracing) are separate
+    identifiers; the docs never state whether the server echoes the caller's value.
+versioning:
+  api:
+    scheme: uri-path
+    current: v1
+    prefix: /api/v1
+    note: >-
+      /health sits OUTSIDE the version prefix. There is no version header, no date-pinning, and no
+      published deprecation policy.
+  payload:
+    fields: [pipeline_version, version]
+    values: 'v1'
+    note: >-
+      Both forecast and drivers request bodies carry their own version discriminator. The drivers
+      body's `version` is documented as validator-selection only — it is stripped before the
+      upstream call.
+  artifacts:
+    field: version
+    example: '1.1'
+    note: >-
+      Artifact JSON files carry their own contract version at the top level. The docs state new
+      fields may appear inside `data` at the same major version — an additive-compatibility promise
+      at the artifact layer, which is more explicit than anything said about the wire API.
+  sdks:
+    scheme: semver
+    note: SDKs version independently of the server; docs recommend pinning a tag for production
+  contract_promise: >-
+    "Breaking changes appear as new operations or new schema versions, not silent edits to existing
+    ones." (docs/sdks/) — a stated additive-only posture, but no policy page, no Sunset header, and
+    no deprecation timeline back it.
+error_envelope:
+  standard: false
+  format: proprietary JSON
+  rfc9457: false
+  content_type: application/json
+  shapes:
+    - name: ErrorMessage
+      fields: [error, trace_id]
+      example: '{"error":"missing bearer token","trace_id":"d70a10f8cc42cb2770eeb99478486628"}'
+      observed: true
+    - name: ValidationErrorResponse
+      fields: [error, details]
+      details_item: [field, message]
+      fail_fast: true
+      note: exactly one detail entry is returned per request
+  see: errors/sybilion-problem-types.yml
+rate_limit_signaling:
+  response_headers: none
+  retry_after: false
+  status_on_exhaustion: 429
+  discrimination: >-
+    The 429 body message is the only way to tell the two exhaustion modes apart on forecast submit —
+    "rate limit" for the per-minute cap, "too many concurrent jobs" for the concurrency cap. There is
+    no header, no Retry-After, and no machine-readable field.
+  see: rate-limits/sybilion-rate-limits.yml
+payload_limits:
+  request_body_max: 2 MiB (forecast bodies)
+  artifact_stream_max: 100 MiB
+  status_on_exceed: 413
+  range_requests:
+    supported: true
+    status: 206
+    note: 'artifact downloads honour Range headers for partial reads'
+money:
+  unit: EUR cents (integer)
+  fields: [balance_eur_cents, available_eur_cents, eur_cents_charged, lifetime_paid_cents]
+  note: >-
+    100 = EUR 1.00. available = balance minus active holds. The docs flag a real vocabulary trap:
+    some 402 bodies say "credits" but the public fields are all EUR cents, so "insufficient credits"
+    must be read as insufficient available EUR-cent balance.
+  holds: >-
+    POST /api/v1/forecasts reserves an estimated maximum cost as a hold before running, which is
+    released and replaced by the actual charge at settlement. A caller can therefore see 402 with a
+    positive balance_eur_cents, or 429-for-concurrency with a positive available_eur_cents.
+async_pattern:
+  submit: 'POST /api/v1/forecasts -> 202 + job_id'
+  poll: 'GET /api/v1/forecasts/{id} -> status in queued|running|completed'
+  retrieve: 'GET /api/v1/forecasts/{id}/artifacts/{name}'
+  artifact_download_before_completion: 409
+  retention: >-
+    Jobs, forecasts and artifacts fall out of a post-settlement visibility window and then return
+    404. The window length is not published.
+cross_links:
+  errors: errors/sybilion-problem-types.yml
+  lifecycle: lifecycle/sybilion-lifecycle.yml
+  authentication: authentication/sybilion-authentication.yml
+  rate_limits: rate-limits/sybilion-rate-limits.yml
+  data_model: data-model/sybilion-data-model.yml

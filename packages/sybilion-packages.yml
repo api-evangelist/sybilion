@@ -1,0 +1,100 @@
+generated: '2026-08-11'
+method: searched
+source: https://sybilion.dev/docs/sdks/
+note: >-
+  Five first-party clients are advertised on the docs Clients page. Four are genuinely published and
+  were read from their registry metadata endpoints. The fifth — the Java SDK, documented as
+  `dev.sybilion:sybilion` on Maven Central with a copy-paste pom.xml snippet in the Quickstart and a
+  dedicated /docs/sdk-java reference page — IS NOT PUBLISHED. repo1.maven.org/maven2/dev/sybilion/
+  returns 404 and the Sonatype Central component API returns zero components for that coordinate.
+  The four real SDKs were all cut on the same day (2026-07-16/17) at 0.2.x, so the client surface is
+  young but current relative to the API (OpenAPI info.version 0.1.0).
+packages:
+  - language: python
+    registry: pypi
+    name: sybilion
+    url: https://pypi.org/project/sybilion/
+    install: pip install sybilion
+    official: true
+    version: 0.2.1
+    published: '2026-07-16'
+    release_count: 8
+    first_published: '2026-05-12'
+    requires: '>=3.10'
+    summary: Official Python SDK for the Sybilion API.
+    features: [typed models, validation errors as exceptions, wait_forecast polling helper, iter_jobs_pages / iter_usage_pages]
+    source: https://sybilion.dev/docs/sdk-python
+  - language: go
+    registry: go
+    name: go.sybilion.dev/sybilion
+    url: https://pkg.go.dev/go.sybilion.dev/sybilion
+    install: go get go.sybilion.dev/sybilion@latest
+    official: true
+    version: v0.2.1
+    published: '2026-07-16'
+    release_count: 5
+    repository: https://github.com/Sybilion-AI/sybilion-go
+    vcs_ref: refs/tags/v0.2.1
+    features: [context-aware WaitForecast, ForEachJobsPage / ForEachUsagePage, custom HTTP client injection, error-unwrap helpers]
+    source: https://sybilion.dev/docs/sdk-go
+  - language: javascript
+    registry: npm
+    name: "@sybilion/sdk"
+    url: https://www.npmjs.com/package/@sybilion/sdk
+    install: npm install @sybilion/sdk
+    official: true
+    version: 0.2.0
+    published: '2026-07-16'
+    release_count: 3
+    license: Apache-2.0
+    features: [typed models, waitForecast, async-generator pagination]
+    source: https://sybilion.dev/docs/sdk-typescript
+    note: >-
+      package.json points at https://github.com/Sybilion-AI/sybilion-typescript, which returns 404 —
+      the repository is private or removed, so the published tarball is the only readable source.
+      The docs also flag this client as the one exception that does NOT read SYBILION_API_TOKEN from
+      the environment; the caller must pass the token explicitly.
+  - language: r
+    registry: cran
+    name: sybilion
+    url: https://cran.r-project.org/package=sybilion
+    install: install.packages("sybilion")
+    official: true
+    version: 0.1.0
+    published: '2026-07-17'
+    license: Apache License (>= 2)
+    doi: 10.32614/CRAN.package.sybilion
+    maintainer_listed: Sybilion
+    summary: Official R Client for the 'Sybilion' API
+    note: >-
+      Not listed on the docs Clients page (which names Python/Go/Java/TypeScript) but IS named in
+      Authentication and Quickstart prose ("our Python, Go, R, and Java SDKs"). Found on CRAN, not
+      via the docs. Only client still at 0.1.x while the others moved to 0.2.x.
+  - language: java
+    registry: maven
+    name: dev.sybilion:sybilion
+    url: https://central.sonatype.com/artifact/dev.sybilion/sybilion
+    install: "<dependency><groupId>dev.sybilion</groupId><artifactId>sybilion</artifactId></dependency>"
+    official: true
+    version: null
+    published: null
+    source: https://sybilion.dev/docs/sdk-java
+    note: >-
+      DOCUMENTED BUT NOT PUBLISHED. Checked 2026-08-11 —
+      https://repo1.maven.org/maven2/dev/sybilion/ returns 404;
+      https://repo1.maven.org/maven2/dev/sybilion/sybilion/maven-metadata.xml returns 404;
+      search.maven.org solrsearch for g:dev.sybilion returns numFound 0; and the Sonatype Central
+      browse API returns totalResultCount 0 for namespace dev.sybilion. The docs publish a full
+      Java reference page (Options.builder(), forecasts().waitUntilSettled, callback pagination) and
+      a pom.xml snippet with no version element, so a developer following the Quickstart cannot
+      resolve the artifact. version is null because it was checked and there is nothing to record —
+      not because it was skipped.
+summary:
+  advertised: 5
+  published: 4
+  unresolvable: 1
+  official: 4
+  languages_published: [python, go, javascript, r]
+  languages_advertised_only: [java]
+  newest_release: '2026-07-17'
+  oldest_current_release: '2026-07-16'

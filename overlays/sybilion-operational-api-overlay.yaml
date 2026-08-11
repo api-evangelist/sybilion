@@ -1,0 +1,137 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Sybilion Operational API
+  version: 1.0.0
+extends: openapi/sybilion-operational-api-openapi.yml
+x-provenance:
+  generated: '2026-08-11'
+  method: generated
+  source: openapi/sybilion-operational-api-openapi.yml
+  note: >-
+    The harvested spec is verbatim from https://api.sybilion.dev/openapi.yaml and is never mutated.
+    Every change below is an API Evangelist enhancement. Two content gaps dominate: NOT ONE of the
+    11 operations declares an operationId, and NOT ONE declares a tag. That makes generated clients
+    fall back to method+path naming (visible in the provider's own Go and Java SDK examples —
+    `ApiV1MeGet`, `apiV1RegionsGet`), makes every reference renderer emit a single flat list, and
+    leaves the tool crosswalk with nothing to bind to. The operationIds proposed here are
+    RECOMMENDATIONS derived from the SDK method names Sybilion already ships (client.list_regions,
+    c.ListCategories, waitForecast) — they are not present upstream and must not be treated as the
+    provider's contract. The spec also declares servers[] as a bare relative "/", so no absolute
+    host is machine-readable from the spec at all; the real base is documented in prose only.
+actions:
+  - target: $.info
+    update:
+      x-apievangelist-enriched: '2026-08-11'
+      x-apievangelist-artifacts:
+        conventions: conventions/sybilion-conventions.yml
+        errors: errors/sybilion-problem-types.yml
+        authentication: authentication/sybilion-authentication.yml
+        rate_limits: rate-limits/sybilion-rate-limits.yml
+        lifecycle: lifecycle/sybilion-lifecycle.yml
+        data_model: data-model/sybilion-data-model.yml
+        mcp: mcp/sybilion-mcp.yml
+        crosswalk: mcp/sybilion-tool-crosswalk.yml
+      x-contract-gaps:
+        - operationIds absent on all 11 operations
+        - tags absent on all 11 operations and no top-level tags[] declared
+        - servers[] is the relative "/" — the production host is prose-only
+        - securityScheme bearerAuth has no description and no bearerFormat
+        - no 429 response documented on POST /api/v1/alerts response headers, and no rate-limit headers anywhere
+        - error responses declare no schema on 400/401/402/404/409/413/429/502
+
+  - target: $.servers
+    update:
+      - url: https://api.sybilion.dev
+        description: >-
+          Production. Documented in prose at https://sybilion.dev/docs/quickstart ("The base URL is
+          https://api.sybilion.dev") and overridable per process with SYBILION_API_BASE_URL. Added
+          here because the upstream spec ships servers[0].url = "/".
+
+  - target: $.tags
+    update:
+      - name: forecasts
+        description: Asynchronous monthly time-series forecasting with quantile bands and driver attribution.
+      - name: drivers
+        description: Synchronous ranking of external driver datasets against a caller's series.
+      - name: alerts
+        description: Synchronous detection of macroeconomic movements relevant to a caller's context.
+      - name: jobs
+        description: Async job listing and status.
+      - name: catalog
+        description: Read-only region and category catalogs used by filters.
+      - name: account
+        description: Account snapshot, balance, credit tranches and billing history.
+      - name: operations
+        description: Unauthenticated service health.
+
+  - target: $.paths['/api/v1/forecasts'].post
+    update:
+      operationId: submitForecast
+      tags: [forecasts]
+      x-apievangelist-note: >-
+        Not idempotent. X-Request-ID is documented only for the synchronous billed calls; a retried
+        submit creates a second job and a second balance hold.
+      x-mcp-tool: submit_forecast
+  - target: $.paths['/api/v1/forecasts/{id}'].get
+    update:
+      operationId: getForecast
+      tags: [forecasts]
+      x-mcp-tool: get_forecast
+  - target: $.paths['/api/v1/forecasts/{id}/artifacts/{name}'].get
+    update:
+      operationId: getForecastArtifact
+      tags: [forecasts]
+      x-mcp-tool: [get_forecast_artifact, get_forecast_chart]
+      x-apievangelist-note: >-
+        Backs two MCP tools. get_forecast_chart takes only {job_id}, so the MCP server selects the
+        chart artifact name server-side — a capability with no REST equivalent.
+  - target: $.paths['/api/v1/drivers'].post
+    update:
+      operationId: rankDrivers
+      tags: [drivers]
+      x-idempotency-header: X-Request-ID
+      x-apievangelist-note: >-
+        Synchronous and billed. No MCP tool exposes this — the single largest REST/MCP divergence in
+        the contract.
+  - target: $.paths['/api/v1/alerts'].post
+    update:
+      operationId: detectAlerts
+      tags: [alerts]
+      x-idempotency-header: X-Request-ID
+      x-mcp-tool: get_alerts
+  - target: $.paths['/api/v1/jobs'].get
+    update:
+      operationId: listJobs
+      tags: [jobs]
+  - target: $.paths['/api/v1/me'].get
+    update:
+      operationId: getAccount
+      tags: [account]
+  - target: $.paths['/api/v1/usage'].get
+    update:
+      operationId: listUsage
+      tags: [account]
+  - target: $.paths['/api/v1/regions'].get
+    update:
+      operationId: listRegions
+      tags: [catalog]
+      x-mcp-tool: list_regions
+  - target: $.paths['/api/v1/categories'].get
+    update:
+      operationId: listCategories
+      tags: [catalog]
+      x-mcp-tool: list_categories
+  - target: $.paths['/health'].get
+    update:
+      operationId: getHealth
+      tags: [operations]
+      x-apievangelist-note: Only unauthenticated operation; sits outside the /api/v1 version prefix.
+
+  - target: $.components.securitySchemes.bearerAuth
+    update:
+      description: >-
+        Accepts either an sk_ops_ API key created in the Developers Portal or an Auth0 access token
+        from a dashboard session. Keys are opaque, unscoped and shown once at creation. See
+        https://sybilion.dev/docs/authentication.
+      x-credential-prefixes: ['sk_ops_']
+      x-env-var: SYBILION_API_TOKEN
