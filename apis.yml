@@ -29,7 +29,7 @@ description: >-
   ChatGPT, Claude and the TradingView Remix extension connect to directly. Billing is a prepaid
   EUR-cent balance with expiring credit tranches and pre-flight holds. Official Python, Go,
   TypeScript and R SDKs are published.
-url: https://sybilion.apievangelist.com/apis.yml
+url: https://raw.githubusercontent.com/api-evangelist/sybilion/refs/heads/main/apis.yml
 created: '2026-07-05'
 modified: '2026-08-11'
 specificationVersion: '0.21'
