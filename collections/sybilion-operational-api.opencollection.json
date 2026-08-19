@@ -1,0 +1,269 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Sybilion API",
+    "version": "0.1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Detect anomaly alerts for your timeseries",
+        "type": "http"
+      },
+      "http": {
+        "method": "POST",
+        "url": "/api/v1/alerts",
+        "body": {
+          "type": "json",
+          "data": "{}"
+        },
+        "auth": {
+          "type": "bearer",
+          "token": "{{bearerToken}}"
+        }
+      },
+      "docs": "Finds alerts related to the provided metadata.\n\nThis is a synchronous billed endpoint — you are charged per alert returned.\nNo charge is recorded on validation errors or upstream failures.\n"
+    },
+    {
+      "info": {
+        "name": "List available thematic categories",
+        "type": "http"
+      },
+      "http": {
+        "method": "GET",
+        "url": "/api/v1/categories",
+        "auth": {
+          "type": "bearer",
+          "token": "{{bearerToken}}"
+        }
+      },
+      "docs": "Returns the full list of thematic categories available for filtering forecasts,\ndriver searches, and alert detection. Use the `id` values from this response\nin the `filters.categories` field of your requests.\n\nThis is a discovery endpoint — category ids are **not** validated on submit,\nso you can filter by any integer in 1–9999, but this listing shows the ones\nthat actually exist in the catalog.\n"
+    },
+    {
+      "info": {
+        "name": "Rank driver datasets for your timeseries",
+        "type": "http"
+      },
+      "http": {
+        "method": "POST",
+        "url": "/api/v1/drivers",
+        "body": {
+          "type": "json",
+          "data": "{}"
+        },
+        "auth": {
+          "type": "bearer",
+          "token": "{{bearerToken}}"
+        }
+      },
+      "docs": "Retrieves drivers ranked by how well they explain your timeseries, returning\na scored list of potential economic drivers. Results are ordered by relevance\nscore descending.\n\nThis is a synchronous billed endpoint — you are charged per driver returned.\nNo charge is recorded on validation errors or upstream failures.\n"
+    },
+    {
+      "info": {
+        "name": "Submit an async forecast job",
+        "type": "http"
+      },
+      "http": {
+        "method": "POST",
+        "url": "/api/v1/forecasts",
+        "body": {
+          "type": "json",
+          "data": "{}"
+        },
+        "auth": {
+          "type": "bearer",
+          "token": "{{bearerToken}}"
+        }
+      },
+      "docs": "Submits a monthly forecast job. The job runs asynchronously — poll\n`GET /api/v1/forecasts/{id}` until `status` is `completed` or `failed`.\nOutput files are then available via `GET /api/v1/forecasts/{id}/artifacts/{name}`.\n\nThe timeseries must contain at least the horizon-dependent minimum number of\nmonthly observations (40 for max horizon 1–3, 60 for 4–6, 120 for 7–12) aligned\nto the first of each month. At least one of `soft_horizon` or `hard_horizon`\nmust be specified.\n"
+    },
+    {
+      "info": {
+        "name": "Poll forecast job status and artifact list",
+        "type": "http"
+      },
+      "http": {
+        "method": "GET",
+        "url": "/api/v1/forecasts/:id",
+        "params": [
+          {
+            "name": "id",
+            "value": "",
+            "type": "path",
+            "description": "Forecast job id returned by `POST /api/v1/forecasts`."
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "token": "{{bearerToken}}"
+        }
+      },
+      "docs": "Returns the current status and artifact metadata for a forecast job you own.\nPoll this endpoint until `status` is `completed` or `failed`. Once completed,\ndownload output files via `GET /api/v1/forecasts/{id}/artifacts/{name}`.\n\nJobs tombstoned by the retention policy return 404.\n"
+    },
+    {
+      "info": {
+        "name": "Download a forecast output file",
+        "type": "http"
+      },
+      "http": {
+        "method": "GET",
+        "url": "/api/v1/forecasts/:id/artifacts/:name",
+        "params": [
+          {
+            "name": "id",
+            "value": "",
+            "type": "path",
+            "description": "Forecast job id."
+          },
+          {
+            "name": "name",
+            "value": "",
+            "type": "path",
+            "description": "Artifact filename (e.g. `forecast.json`)."
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "token": "{{bearerToken}}"
+        }
+      },
+      "docs": "Streams a single output file for a completed forecast job.\n\nAvailable artifacts:\n- `forecast.json` — point forecast values for each horizon month\n- `backtest_metrics.json` — accuracy metrics from the backtest evaluation (only when `backtest: true`)\n- `backtest_trajectories.json` — full trajectory samples from the backtest (only when `backtest: true`)\n- `external_signals.json` — external driver signals used by the model\n- `input.json` — the processed input timeseries as seen by the pipeline\n\nThe "
+    },
+    {
+      "info": {
+        "name": "List your async jobs",
+        "type": "http"
+      },
+      "http": {
+        "method": "GET",
+        "url": "/api/v1/jobs",
+        "params": [
+          {
+            "name": "page",
+            "value": "",
+            "type": "query",
+            "description": "1-indexed page number."
+          },
+          {
+            "name": "limit",
+            "value": "",
+            "type": "query",
+            "description": "Page size. Capped at 200."
+          },
+          {
+            "name": "sort",
+            "value": "",
+            "type": "query",
+            "description": "Column to sort by."
+          },
+          {
+            "name": "order",
+            "value": "",
+            "type": "query",
+            "description": "Sort direction."
+          },
+          {
+            "name": "status",
+            "value": "",
+            "type": "query",
+            "description": "Filter to jobs in this status."
+          },
+          {
+            "name": "pipeline_type",
+            "value": "",
+            "type": "query",
+            "description": "Filter to jobs of this pipeline type (currently only `forecast` is emitted)."
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "token": "{{bearerToken}}"
+        }
+      },
+      "docs": "Returns async jobs as a paginated list, sorted and filtered by the query\nparameters. Heavy fields (payload, artifact manifest) are omitted — fetch\nfull per-job state via `GET /api/v1/forecasts/{id}`.\n\nJobs tombstoned by the retention policy are excluded here and return 404\non the detail endpoint.\n"
+    },
+    {
+      "info": {
+        "name": "Account snapshot — balance, tier, and credit tranches",
+        "type": "http"
+      },
+      "http": {
+        "method": "GET",
+        "url": "/api/v1/me",
+        "auth": {
+          "type": "bearer",
+          "token": "{{bearerToken}}"
+        }
+      },
+      "docs": "Returns the account snapshot for the current user: credit balance, active\ncredit tranches, auto-recharge settings, and current pricing tier. All\nmonetary fields are integer EUR cents (1 EUR = 100 cents).\n"
+    },
+    {
+      "info": {
+        "name": "List available geographic regions",
+        "type": "http"
+      },
+      "http": {
+        "method": "GET",
+        "url": "/api/v1/regions",
+        "auth": {
+          "type": "bearer",
+          "token": "{{bearerToken}}"
+        }
+      },
+      "docs": "Returns the full list of geographic regions available for filtering forecasts,\ndriver searches, and alert detection. Use the `id` value from each entry\nin the `filters.regions` field of your requests.\n\nThis is a discovery endpoint — region ids are **not** validated on submit,\nso you can filter by any integer in 1–9999, but this listing shows the ones\nthat actually exist in the catalog.\n"
+    },
+    {
+      "info": {
+        "name": "Billing history (paginated usage events)",
+        "type": "http"
+      },
+      "http": {
+        "method": "GET",
+        "url": "/api/v1/usage",
+        "params": [
+          {
+            "name": "page",
+            "value": "",
+            "type": "query",
+            "description": "1-indexed page number."
+          },
+          {
+            "name": "limit",
+            "value": "",
+            "type": "query",
+            "description": "Page size. Capped at 200."
+          },
+          {
+            "name": "sort",
+            "value": "",
+            "type": "query",
+            "description": "Column to sort by."
+          },
+          {
+            "name": "order",
+            "value": "",
+            "type": "query",
+            "description": "Sort direction."
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "token": "{{bearerToken}}"
+        }
+      },
+      "docs": "Returns billing history as a paginated list of usage events. Each event\nrepresents one charge — either a completed async job or a synchronous billed\nAPI call. Use `sort` and `order` to control the result order.\n"
+    },
+    {
+      "info": {
+        "name": "Service health check",
+        "type": "http"
+      },
+      "http": {
+        "method": "GET",
+        "url": "/health"
+      },
+      "docs": "Liveness check. Returns `status` (\"ok\" or \"degraded\") and a `components` map\nwhere each key is a functional component name and each value reports its current\nstate. A 200 means all components are healthy; 503 means at least one is in an\nerror state.\n"
+    }
+  ],
+  "bundled": true
+}

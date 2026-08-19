@@ -1,0 +1,3284 @@
+{
+  "item": [
+    {
+      "id": "b0974b3f-9555-4cbf-bbfc-af556f188eb2",
+      "name": "Detect anomaly alerts for your timeseries",
+      "request": {
+        "name": "Detect anomaly alerts for your timeseries",
+        "description": {
+          "content": "Finds alerts related to the provided metadata.\n\nThis is a synchronous billed endpoint — you are charged per alert returned.\nNo charge is recorded on validation errors or upstream failures.\n",
+          "type": "text/plain"
+        },
+        "url": {
+          "path": [
+            "api",
+            "v1",
+            "alerts"
+          ],
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "method": "POST",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{bearerToken}}"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"metadata\": {\n    \"title\": \"<string>\",\n    \"description\": \"<string>\",\n    \"keywords\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"context_enriched\": \"<boolean>\",\n  \"date_from\": \"<string>\",\n  \"date_to\": \"<string>\",\n  \"filters\": {\n    \"categories\": [\n      \"<integer>\",\n      \"<integer>\"\n    ],\n    \"general_drivers\": \"<boolean>\",\n    \"limit\": \"<integer>\",\n    \"regions\": [\n      \"<integer>\",\n      \"<integer>\"\n    ]\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "id": "989099d7-845a-4975-bccc-35f93f9d4f14",
+          "name": "Alerts detected for your timeseries, ordered by relevance.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "alerts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"metadata\": {\n    \"title\": \"<string>\",\n    \"description\": \"<string>\",\n    \"keywords\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"context_enriched\": \"<boolean>\",\n  \"date_from\": \"<string>\",\n  \"date_to\": \"<string>\",\n  \"filters\": {\n    \"categories\": [\n      3,\n      7\n    ],\n    \"regions\": [\n      42,\n      88\n    ],\n    \"limit\": 25\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"alerts\": [\n    {\n      \"trending\": true,\n      \"name\": \"OMX Copenhagen Oil, Gas and Coal Price Index\",\n      \"pct_change\": -7.14,\n      \"news\": [\n        {\n          \"trending\": true,\n          \"title\": \"US-Iran agreed on principal deal to open Strait of Hormuz\",\n          \"description\": \"The US and Iran have reportedly reached a preliminary understanding to reopen the Strait of Hormuz.\",\n          \"url\": \"https://www.thenews.com.pk/latest/1403722\",\n          \"published_at\": \"2026-05-24T21:28:00Z\",\n          \"source_name\": \"The News International\",\n          \"category\": \"world\"\n        }\n      ]\n    },\n    {\n      \"trending\": true,\n      \"name\": \"OMX Copenhagen Oil, Gas and Coal Price Index\",\n      \"pct_change\": -7.14,\n      \"news\": [\n        {\n          \"trending\": true,\n          \"title\": \"US-Iran agreed on principal deal to open Strait of Hormuz\",\n          \"description\": \"The US and Iran have reportedly reached a preliminary understanding to reopen the Strait of Hormuz.\",\n          \"url\": \"https://www.thenews.com.pk/latest/1403722\",\n          \"published_at\": \"2026-05-24T21:28:00Z\",\n          \"source_name\": \"The News International\",\n          \"category\": \"world\"\n        }\n      ]\n    }\n  ]\n}",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        },
+        {
+          "id": "541cd49d-d7a2-40c9-b90a-936171be3e3e",
+          "name": "Malformed JSON body.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "alerts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"metadata\": {\n    \"title\": \"<string>\",\n    \"description\": \"<string>\",\n    \"keywords\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"context_enriched\": \"<boolean>\",\n  \"date_from\": \"<string>\",\n  \"date_to\": \"<string>\",\n  \"filters\": {\n    \"categories\": [\n      3,\n      7\n    ],\n    \"regions\": [\n      42,\n      88\n    ],\n    \"limit\": 25\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "",
+          "cookie": [],
+          "_postman_previewlanguage": "text"
+        },
+        {
+          "id": "aa5d1107-7cd1-41c1-8ced-5f9614044e0a",
+          "name": "Missing or invalid bearer token.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "alerts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"metadata\": {\n    \"title\": \"<string>\",\n    \"description\": \"<string>\",\n    \"keywords\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"context_enriched\": \"<boolean>\",\n  \"date_from\": \"<string>\",\n  \"date_to\": \"<string>\",\n  \"filters\": {\n    \"categories\": [\n      3,\n      7\n    ],\n    \"regions\": [\n      42,\n      88\n    ],\n    \"limit\": 25\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Unauthorized",
+          "code": 401,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "",
+          "cookie": [],
+          "_postman_previewlanguage": "text"
+        },
+        {
+          "id": "62581ce7-c606-4710-a88e-3afa1c139025",
+          "name": "Insufficient credits — the request did not reach the upstream service.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "alerts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"metadata\": {\n    \"title\": \"<string>\",\n    \"description\": \"<string>\",\n    \"keywords\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"context_enriched\": \"<boolean>\",\n  \"date_from\": \"<string>\",\n  \"date_to\": \"<string>\",\n  \"filters\": {\n    \"categories\": [\n      3,\n      7\n    ],\n    \"regions\": [\n      42,\n      88\n    ],\n    \"limit\": 25\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Payment Required",
+          "code": 402,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "",
+          "cookie": [],
+          "_postman_previewlanguage": "text"
+        },
+        {
+          "id": "4693767f-abfb-40c8-b1dd-0dc594860b65",
+          "name": "Request body too large.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "alerts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"metadata\": {\n    \"title\": \"<string>\",\n    \"description\": \"<string>\",\n    \"keywords\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"context_enriched\": \"<boolean>\",\n  \"date_from\": \"<string>\",\n  \"date_to\": \"<string>\",\n  \"filters\": {\n    \"categories\": [\n      3,\n      7\n    ],\n    \"regions\": [\n      42,\n      88\n    ],\n    \"limit\": 25\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Request Entity Too Large",
+          "code": 413,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "",
+          "cookie": [],
+          "_postman_previewlanguage": "text"
+        },
+        {
+          "id": "aa5ec240-e730-41ce-a777-1465c4ad7ae1",
+          "name": "Payload failed validation.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "alerts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"metadata\": {\n    \"title\": \"<string>\",\n    \"description\": \"<string>\",\n    \"keywords\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"context_enriched\": \"<boolean>\",\n  \"date_from\": \"<string>\",\n  \"date_to\": \"<string>\",\n  \"filters\": {\n    \"categories\": [\n      3,\n      7\n    ],\n    \"regions\": [\n      42,\n      88\n    ],\n    \"limit\": 25\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+          "code": 422,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": \"validation_failed\",\n  \"details\": [\n    {\n      \"field\": \"metadata.title\",\n      \"message\": \"title must be at least 20 characters\"\n    }\n  ]\n}",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        },
+        {
+          "id": "bfb3a509-526f-41df-bbba-4035194b5f4e",
+          "name": "Rate limit exceeded — too many synchronous billed requests per minute.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "alerts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"metadata\": {\n    \"title\": \"<string>\",\n    \"description\": \"<string>\",\n    \"keywords\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"context_enriched\": \"<boolean>\",\n  \"date_from\": \"<string>\",\n  \"date_to\": \"<string>\",\n  \"filters\": {\n    \"categories\": [\n      3,\n      7\n    ],\n    \"regions\": [\n      42,\n      88\n    ],\n    \"limit\": 25\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Too Many Requests",
+          "code": 429,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "",
+          "cookie": [],
+          "_postman_previewlanguage": "text"
+        },
+        {
+          "id": "85106c18-c2d9-4cee-9bd8-20463eb27a9b",
+          "name": "Upstream service error or unreachable.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "alerts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"metadata\": {\n    \"title\": \"<string>\",\n    \"description\": \"<string>\",\n    \"keywords\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"context_enriched\": \"<boolean>\",\n  \"date_from\": \"<string>\",\n  \"date_to\": \"<string>\",\n  \"filters\": {\n    \"categories\": [\n      3,\n      7\n    ],\n    \"regions\": [\n      42,\n      88\n    ],\n    \"limit\": 25\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Bad Gateway",
+          "code": 502,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "",
+          "cookie": [],
+          "_postman_previewlanguage": "text"
+        },
+        {
+          "id": "1e197902-f6af-40c7-937f-104b3c530262",
+          "name": "Service Unavailable",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "alerts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"metadata\": {\n    \"title\": \"<string>\",\n    \"description\": \"<string>\",\n    \"keywords\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"context_enriched\": \"<boolean>\",\n  \"date_from\": \"<string>\",\n  \"date_to\": \"<string>\",\n  \"filters\": {\n    \"categories\": [\n      3,\n      7\n    ],\n    \"regions\": [\n      42,\n      88\n    ],\n    \"limit\": 25\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Service Unavailable",
+          "code": 503,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": \"Service Unavailable\"\n}",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        }
+      ],
+      "event": [],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      }
+    },
+    {
+      "id": "e1cf547c-6bee-4de8-906f-321d591e220a",
+      "name": "List available thematic categories",
+      "request": {
+        "name": "List available thematic categories",
+        "description": {
+          "content": "Returns the full list of thematic categories available for filtering forecasts,\ndriver searches, and alert detection. Use the `id` values from this response\nin the `filters.categories` field of your requests.\n\nThis is a discovery endpoint — category ids are **not** validated on submit,\nso you can filter by any integer in 1–9999, but this listing shows the ones\nthat actually exist in the catalog.\n",
+          "type": "text/plain"
+        },
+        "url": {
+          "path": [
+            "api",
+            "v1",
+            "categories"
+          ],
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "method": "GET",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{bearerToken}}"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "id": "6c34c2dd-c333-433e-a6cd-dc9c5881aab8",
+          "name": "Full category listing, sorted by `id` ascending.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "categories"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"items\": [\n    {\n      \"id\": 3,\n      \"name\": \"Energy\"\n    },\n    {\n      \"id\": 7,\n      \"name\": \"Commodities\"\n    },\n    {\n      \"id\": 14,\n      \"name\": \"Financials\"\n    }\n  ]\n}",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        },
+        {
+          "id": "8c477fe7-0c24-44cf-8711-51435028d9c0",
+          "name": "Missing or invalid bearer token.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "categories"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "Unauthorized",
+          "code": 401,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "",
+          "cookie": [],
+          "_postman_previewlanguage": "text"
+        },
+        {
+          "id": "508c2646-b145-4427-a89a-1976d8319341",
+          "name": "Catalog service error or unreachable.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "categories"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "Bad Gateway",
+          "code": 502,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "",
+          "cookie": [],
+          "_postman_previewlanguage": "text"
+        },
+        {
+          "id": "1d1aedb4-a8b3-4313-bdb0-3b4fc0a1591b",
+          "name": "Service Unavailable",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "categories"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "Service Unavailable",
+          "code": 503,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": \"Service Unavailable\"\n}",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        }
+      ],
+      "event": [],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      }
+    },
+    {
+      "id": "a07d87d7-38e1-48d8-b10e-f6c2d8807dc1",
+      "name": "Rank driver datasets for your timeseries",
+      "request": {
+        "name": "Rank driver datasets for your timeseries",
+        "description": {
+          "content": "Retrieves drivers ranked by how well they explain your timeseries, returning\na scored list of potential economic drivers. Results are ordered by relevance\nscore descending.\n\nThis is a synchronous billed endpoint — you are charged per driver returned.\nNo charge is recorded on validation errors or upstream failures.\n",
+          "type": "text/plain"
+        },
+        "url": {
+          "path": [
+            "api",
+            "v1",
+            "drivers"
+          ],
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "method": "POST",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{bearerToken}}"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"version\": \"<string>\",\n  \"recency_factor\": \"<double>\",\n  \"timeseries_metadata\": {\n    \"title\": \"<string>\",\n    \"description\": \"<string>\",\n    \"keywords\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"filters\": {\n    \"categories\": [\n      \"<integer>\",\n      \"<integer>\"\n    ],\n    \"general_drivers\": \"<boolean>\",\n    \"limit\": \"<integer>\",\n    \"regions\": [\n      \"<integer>\",\n      \"<integer>\"\n    ]\n  },\n  \"timeseries\": {\n    \"key_0\": \"<number>\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "id": "2ad99d7e-4247-4a80-a774-2f45f38d3b06",
+          "name": "Ranked driver candidates for your timeseries.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "drivers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"version\": \"<string>\",\n  \"recency_factor\": \"<double>\",\n  \"timeseries_metadata\": {\n    \"title\": \"<string>\",\n    \"description\": \"<string>\",\n    \"keywords\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"filters\": {\n    \"categories\": [\n      3,\n      7\n    ],\n    \"regions\": [\n      42,\n      88\n    ],\n    \"limit\": 25\n  },\n  \"timeseries\": {\n    \"key_0\": \"<number>\",\n    \"key_1\": \"<number>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"status\": 200,\n  \"message\": \"Success\",\n  \"data\": {\n    \"drivers\": [\n      {\n        \"hash_id\": \"d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9\",\n        \"driver_name\": \"Natural Gas Futures Price (Henry Hub)\",\n        \"score\": 0.87\n      },\n      {\n        \"hash_id\": \"e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0\",\n        \"driver_name\": \"US Dollar Index (DXY)\",\n        \"score\": 0.74\n      }\n    ]\n  }\n}",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        },
+        {
+          "id": "cc288f70-da02-460f-b3d2-1930fa73ad8f",
+          "name": "Malformed JSON body.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "drivers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"version\": \"<string>\",\n  \"recency_factor\": \"<double>\",\n  \"timeseries_metadata\": {\n    \"title\": \"<string>\",\n    \"description\": \"<string>\",\n    \"keywords\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"filters\": {\n    \"categories\": [\n      3,\n      7\n    ],\n    \"regions\": [\n      42,\n      88\n    ],\n    \"limit\": 25\n  },\n  \"timeseries\": {\n    \"key_0\": \"<number>\",\n    \"key_1\": \"<number>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "",
+          "cookie": [],
+          "_postman_previewlanguage": "text"
+        },
+        {
+          "id": "ed549531-be53-47a5-b4d4-8ee468170809",
+          "name": "Missing or invalid bearer token.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "drivers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"version\": \"<string>\",\n  \"recency_factor\": \"<double>\",\n  \"timeseries_metadata\": {\n    \"title\": \"<string>\",\n    \"description\": \"<string>\",\n    \"keywords\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"filters\": {\n    \"categories\": [\n      3,\n      7\n    ],\n    \"regions\": [\n      42,\n      88\n    ],\n    \"limit\": 25\n  },\n  \"timeseries\": {\n    \"key_0\": \"<number>\",\n    \"key_1\": \"<number>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Unauthorized",
+          "code": 401,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "",
+          "cookie": [],
+          "_postman_previewlanguage": "text"
+        },
+        {
+          "id": "63519b32-0f53-4713-b3c2-e5009f7d523a",
+          "name": "Insufficient credits — the request did not reach the upstream service.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "drivers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"version\": \"<string>\",\n  \"recency_factor\": \"<double>\",\n  \"timeseries_metadata\": {\n    \"title\": \"<string>\",\n    \"description\": \"<string>\",\n    \"keywords\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"filters\": {\n    \"categories\": [\n      3,\n      7\n    ],\n    \"regions\": [\n      42,\n      88\n    ],\n    \"limit\": 25\n  },\n  \"timeseries\": {\n    \"key_0\": \"<number>\",\n    \"key_1\": \"<number>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Payment Required",
+          "code": 402,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "",
+          "cookie": [],
+          "_postman_previewlanguage": "text"
+        },
+        {
+          "id": "4cb1127d-b801-4dee-9442-8d9bcc04f26e",
+          "name": "Request body too large.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "drivers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"version\": \"<string>\",\n  \"recency_factor\": \"<double>\",\n  \"timeseries_metadata\": {\n    \"title\": \"<string>\",\n    \"description\": \"<string>\",\n    \"keywords\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"filters\": {\n    \"categories\": [\n      3,\n      7\n    ],\n    \"regions\": [\n      42,\n      88\n    ],\n    \"limit\": 25\n  },\n  \"timeseries\": {\n    \"key_0\": \"<number>\",\n    \"key_1\": \"<number>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Request Entity Too Large",
+          "code": 413,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "",
+          "cookie": [],
+          "_postman_previewlanguage": "text"
+        },
+        {
+          "id": "9fad4860-701d-4367-a16e-eb2cc7ca0e77",
+          "name": "Payload failed validation.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "drivers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"version\": \"<string>\",\n  \"recency_factor\": \"<double>\",\n  \"timeseries_metadata\": {\n    \"title\": \"<string>\",\n    \"description\": \"<string>\",\n    \"keywords\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"filters\": {\n    \"categories\": [\n      3,\n      7\n    ],\n    \"regions\": [\n      42,\n      88\n    ],\n    \"limit\": 25\n  },\n  \"timeseries\": {\n    \"key_0\": \"<number>\",\n    \"key_1\": \"<number>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+          "code": 422,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": \"validation_failed\",\n  \"details\": [\n    {\n      \"field\": \"timeseries_metadata.title\",\n      \"message\": \"title must be at least 20 characters\"\n    }\n  ]\n}",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        },
+        {
+          "id": "06037d26-d942-4724-b479-8a9db5e643b8",
+          "name": "Rate limit exceeded — too many synchronous billed requests per minute.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "drivers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"version\": \"<string>\",\n  \"recency_factor\": \"<double>\",\n  \"timeseries_metadata\": {\n    \"title\": \"<string>\",\n    \"description\": \"<string>\",\n    \"keywords\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"filters\": {\n    \"categories\": [\n      3,\n      7\n    ],\n    \"regions\": [\n      42,\n      88\n    ],\n    \"limit\": 25\n  },\n  \"timeseries\": {\n    \"key_0\": \"<number>\",\n    \"key_1\": \"<number>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Too Many Requests",
+          "code": 429,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "",
+          "cookie": [],
+          "_postman_previewlanguage": "text"
+        },
+        {
+          "id": "c491758f-5f15-45f2-b53c-5bb4230cd658",
+          "name": "Upstream service error or unreachable.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "drivers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"version\": \"<string>\",\n  \"recency_factor\": \"<double>\",\n  \"timeseries_metadata\": {\n    \"title\": \"<string>\",\n    \"description\": \"<string>\",\n    \"keywords\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"filters\": {\n    \"categories\": [\n      3,\n      7\n    ],\n    \"regions\": [\n      42,\n      88\n    ],\n    \"limit\": 25\n  },\n  \"timeseries\": {\n    \"key_0\": \"<number>\",\n    \"key_1\": \"<number>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Bad Gateway",
+          "code": 502,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "",
+          "cookie": [],
+          "_postman_previewlanguage": "text"
+        },
+        {
+          "id": "94253cca-e03f-480f-82ac-62462f6797c1",
+          "name": "Service Unavailable",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "drivers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"version\": \"<string>\",\n  \"recency_factor\": \"<double>\",\n  \"timeseries_metadata\": {\n    \"title\": \"<string>\",\n    \"description\": \"<string>\",\n    \"keywords\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"filters\": {\n    \"categories\": [\n      3,\n      7\n    ],\n    \"regions\": [\n      42,\n      88\n    ],\n    \"limit\": 25\n  },\n  \"timeseries\": {\n    \"key_0\": \"<number>\",\n    \"key_1\": \"<number>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Service Unavailable",
+          "code": 503,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": \"Service Unavailable\"\n}",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        }
+      ],
+      "event": [],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      }
+    },
+    {
+      "id": "abd2030f-652a-45ea-a29e-fa6870fe9d3a",
+      "name": "Submit an async forecast job",
+      "request": {
+        "name": "Submit an async forecast job",
+        "description": {
+          "content": "Submits a monthly forecast job. The job runs asynchronously — poll\n`GET /api/v1/forecasts/{id}` until `status` is `completed` or `failed`.\nOutput files are then available via `GET /api/v1/forecasts/{id}/artifacts/{name}`.\n\nThe timeseries must contain at least the horizon-dependent minimum number of\nmonthly observations (40 for max horizon 1–3, 60 for 4–6, 120 for 7–12) aligned\nto the first of each month. At least one of `soft_horizon` or `hard_horizon`\nmust be specified.\n",
+          "type": "text/plain"
+        },
+        "url": {
+          "path": [
+            "api",
+            "v1",
+            "forecasts"
+          ],
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "method": "POST",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{bearerToken}}"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"pipeline_version\": \"<string>\",\n  \"frequency\": \"<string>\",\n  \"recency_factor\": \"<double>\",\n  \"timeseries_metadata\": {\n    \"title\": \"<string>\",\n    \"description\": \"<string>\",\n    \"keywords\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"timeseries\": {\n    \"key_0\": \"<number>\"\n  },\n  \"aux_timeseries\": [\n    {\n      \"key_0\": \"<number>\"\n    }\n  ],\n  \"backtest\": \"<boolean>\",\n  \"filters\": {\n    \"categories\": [\n      \"<integer>\",\n      \"<integer>\"\n    ],\n    \"general_drivers\": \"<boolean>\",\n    \"limit\": \"<integer>\",\n    \"regions\": [\n      \"<integer>\",\n      \"<integer>\"\n    ]\n  },\n  \"hard_horizon\": \"<integer>\",\n  \"max_num_features\": \"<integer>\",\n  \"optimization_budget\": \"none\",\n  \"run_baseline\": false,\n  \"soft_horizon\": \"<integer>\",\n  \"strictly_positive\": false,\n  \"trend_num_classes\": \"<integer>\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "id": "fec4e344-1b0d-4540-990b-d3840471d231",
+          "name": "Job accepted. Use `job_id` to poll status.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "forecasts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pipeline_version\": \"<string>\",\n  \"frequency\": \"<string>\",\n  \"recency_factor\": \"<double>\",\n  \"timeseries_metadata\": {\n    \"title\": \"<string>\",\n    \"description\": \"<string>\",\n    \"keywords\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"timeseries\": {\n    \"key_0\": \"<number>\",\n    \"key_1\": \"<number>\"\n  },\n  \"aux_timeseries\": [\n    {\n      \"key_0\": \"<number>\"\n    }\n  ],\n  \"backtest\": \"<boolean>\",\n  \"filters\": {\n    \"categories\": [\n      3,\n      7\n    ],\n    \"regions\": [\n      42,\n      88\n    ],\n    \"limit\": 25\n  },\n  \"hard_horizon\": \"<integer>\",\n  \"max_num_features\": \"<integer>\",\n  \"optimization_budget\": \"none\",\n  \"run_baseline\": false,\n  \"soft_horizon\": \"<integer>\",\n  \"strictly_positive\": false,\n  \"trend_num_classes\": \"<integer>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Accepted",
+          "code": 202,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"job_id\": \"c7f2d8a9-3b4e-5f6a-7c8d-9e0f1a2b3c4d\",\n  \"poll_url\": \"/api/v1/forecasts/c7f2d8a9-3b4e-5f6a-7c8d-9e0f1a2b3c4d\",\n  \"workflow\": \"forecast-c7f2d8a9-3b4e-5f6a-7c8d-9e0f1a2b3c4d\",\n  \"run_id\": \"01JV7K4MGNBTZXQP8WR3Y5D6HF\"\n}",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        },
+        {
+          "id": "9543bccf-2c88-4243-9a68-e26c2b5029f7",
+          "name": "Malformed JSON body.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "forecasts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pipeline_version\": \"<string>\",\n  \"frequency\": \"<string>\",\n  \"recency_factor\": \"<double>\",\n  \"timeseries_metadata\": {\n    \"title\": \"<string>\",\n    \"description\": \"<string>\",\n    \"keywords\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"timeseries\": {\n    \"key_0\": \"<number>\",\n    \"key_1\": \"<number>\"\n  },\n  \"aux_timeseries\": [\n    {\n      \"key_0\": \"<number>\"\n    }\n  ],\n  \"backtest\": \"<boolean>\",\n  \"filters\": {\n    \"categories\": [\n      3,\n      7\n    ],\n    \"regions\": [\n      42,\n      88\n    ],\n    \"limit\": 25\n  },\n  \"hard_horizon\": \"<integer>\",\n  \"max_num_features\": \"<integer>\",\n  \"optimization_budget\": \"none\",\n  \"run_baseline\": false,\n  \"soft_horizon\": \"<integer>\",\n  \"strictly_positive\": false,\n  \"trend_num_classes\": \"<integer>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "",
+          "cookie": [],
+          "_postman_previewlanguage": "text"
+        },
+        {
+          "id": "7b874fc8-a751-4216-b44b-2cd33e6dc7f7",
+          "name": "Missing or invalid bearer token.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "forecasts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pipeline_version\": \"<string>\",\n  \"frequency\": \"<string>\",\n  \"recency_factor\": \"<double>\",\n  \"timeseries_metadata\": {\n    \"title\": \"<string>\",\n    \"description\": \"<string>\",\n    \"keywords\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"timeseries\": {\n    \"key_0\": \"<number>\",\n    \"key_1\": \"<number>\"\n  },\n  \"aux_timeseries\": [\n    {\n      \"key_0\": \"<number>\"\n    }\n  ],\n  \"backtest\": \"<boolean>\",\n  \"filters\": {\n    \"categories\": [\n      3,\n      7\n    ],\n    \"regions\": [\n      42,\n      88\n    ],\n    \"limit\": 25\n  },\n  \"hard_horizon\": \"<integer>\",\n  \"max_num_features\": \"<integer>\",\n  \"optimization_budget\": \"none\",\n  \"run_baseline\": false,\n  \"soft_horizon\": \"<integer>\",\n  \"strictly_positive\": false,\n  \"trend_num_classes\": \"<integer>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Unauthorized",
+          "code": 401,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "",
+          "cookie": [],
+          "_postman_previewlanguage": "text"
+        },
+        {
+          "id": "320005e6-55f5-4307-9c73-1bcabe0a063f",
+          "name": "Insufficient credits.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "forecasts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pipeline_version\": \"<string>\",\n  \"frequency\": \"<string>\",\n  \"recency_factor\": \"<double>\",\n  \"timeseries_metadata\": {\n    \"title\": \"<string>\",\n    \"description\": \"<string>\",\n    \"keywords\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"timeseries\": {\n    \"key_0\": \"<number>\",\n    \"key_1\": \"<number>\"\n  },\n  \"aux_timeseries\": [\n    {\n      \"key_0\": \"<number>\"\n    }\n  ],\n  \"backtest\": \"<boolean>\",\n  \"filters\": {\n    \"categories\": [\n      3,\n      7\n    ],\n    \"regions\": [\n      42,\n      88\n    ],\n    \"limit\": 25\n  },\n  \"hard_horizon\": \"<integer>\",\n  \"max_num_features\": \"<integer>\",\n  \"optimization_budget\": \"none\",\n  \"run_baseline\": false,\n  \"soft_horizon\": \"<integer>\",\n  \"strictly_positive\": false,\n  \"trend_num_classes\": \"<integer>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Payment Required",
+          "code": 402,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "",
+          "cookie": [],
+          "_postman_previewlanguage": "text"
+        },
+        {
+          "id": "a54e5539-5ef5-4566-9687-1cf6c1a707a9",
+          "name": "Request body too large.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "forecasts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pipeline_version\": \"<string>\",\n  \"frequency\": \"<string>\",\n  \"recency_factor\": \"<double>\",\n  \"timeseries_metadata\": {\n    \"title\": \"<string>\",\n    \"description\": \"<string>\",\n    \"keywords\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"timeseries\": {\n    \"key_0\": \"<number>\",\n    \"key_1\": \"<number>\"\n  },\n  \"aux_timeseries\": [\n    {\n      \"key_0\": \"<number>\"\n    }\n  ],\n  \"backtest\": \"<boolean>\",\n  \"filters\": {\n    \"categories\": [\n      3,\n      7\n    ],\n    \"regions\": [\n      42,\n      88\n    ],\n    \"limit\": 25\n  },\n  \"hard_horizon\": \"<integer>\",\n  \"max_num_features\": \"<integer>\",\n  \"optimization_budget\": \"none\",\n  \"run_baseline\": false,\n  \"soft_horizon\": \"<integer>\",\n  \"strictly_positive\": false,\n  \"trend_num_classes\": \"<integer>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Request Entity Too Large",
+          "code": 413,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "",
+          "cookie": [],
+          "_postman_previewlanguage": "text"
+        },
+        {
+          "id": "235bf34e-65b2-4968-9874-65f2dd4636ef",
+          "name": "Payload failed validation.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "forecasts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pipeline_version\": \"<string>\",\n  \"frequency\": \"<string>\",\n  \"recency_factor\": \"<double>\",\n  \"timeseries_metadata\": {\n    \"title\": \"<string>\",\n    \"description\": \"<string>\",\n    \"keywords\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"timeseries\": {\n    \"key_0\": \"<number>\",\n    \"key_1\": \"<number>\"\n  },\n  \"aux_timeseries\": [\n    {\n      \"key_0\": \"<number>\"\n    }\n  ],\n  \"backtest\": \"<boolean>\",\n  \"filters\": {\n    \"categories\": [\n      3,\n      7\n    ],\n    \"regions\": [\n      42,\n      88\n    ],\n    \"limit\": 25\n  },\n  \"hard_horizon\": \"<integer>\",\n  \"max_num_features\": \"<integer>\",\n  \"optimization_budget\": \"none\",\n  \"run_baseline\": false,\n  \"soft_horizon\": \"<integer>\",\n  \"strictly_positive\": false,\n  \"trend_num_classes\": \"<integer>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+          "code": 422,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": \"validation_failed\",\n  \"details\": [\n    {\n      \"field\": \"soft_horizon\",\n      \"message\": \"soft_horizon must be between 1 and 12\"\n    }\n  ]\n}",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        },
+        {
+          "id": "60726e98-405b-48fa-a656-5b56f25acad8",
+          "name": "Too many concurrent jobs for your tier.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "forecasts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pipeline_version\": \"<string>\",\n  \"frequency\": \"<string>\",\n  \"recency_factor\": \"<double>\",\n  \"timeseries_metadata\": {\n    \"title\": \"<string>\",\n    \"description\": \"<string>\",\n    \"keywords\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"timeseries\": {\n    \"key_0\": \"<number>\",\n    \"key_1\": \"<number>\"\n  },\n  \"aux_timeseries\": [\n    {\n      \"key_0\": \"<number>\"\n    }\n  ],\n  \"backtest\": \"<boolean>\",\n  \"filters\": {\n    \"categories\": [\n      3,\n      7\n    ],\n    \"regions\": [\n      42,\n      88\n    ],\n    \"limit\": 25\n  },\n  \"hard_horizon\": \"<integer>\",\n  \"max_num_features\": \"<integer>\",\n  \"optimization_budget\": \"none\",\n  \"run_baseline\": false,\n  \"soft_horizon\": \"<integer>\",\n  \"strictly_positive\": false,\n  \"trend_num_classes\": \"<integer>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Too Many Requests",
+          "code": 429,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "",
+          "cookie": [],
+          "_postman_previewlanguage": "text"
+        },
+        {
+          "id": "c81338f3-ef22-4a46-9396-9cbc40b62c14",
+          "name": "Service Unavailable",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "forecasts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pipeline_version\": \"<string>\",\n  \"frequency\": \"<string>\",\n  \"recency_factor\": \"<double>\",\n  \"timeseries_metadata\": {\n    \"title\": \"<string>\",\n    \"description\": \"<string>\",\n    \"keywords\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"timeseries\": {\n    \"key_0\": \"<number>\",\n    \"key_1\": \"<number>\"\n  },\n  \"aux_timeseries\": [\n    {\n      \"key_0\": \"<number>\"\n    }\n  ],\n  \"backtest\": \"<boolean>\",\n  \"filters\": {\n    \"categories\": [\n      3,\n      7\n    ],\n    \"regions\": [\n      42,\n      88\n    ],\n    \"limit\": 25\n  },\n  \"hard_horizon\": \"<integer>\",\n  \"max_num_features\": \"<integer>\",\n  \"optimization_budget\": \"none\",\n  \"run_baseline\": false,\n  \"soft_horizon\": \"<integer>\",\n  \"strictly_positive\": false,\n  \"trend_num_classes\": \"<integer>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Service Unavailable",
+          "code": 503,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": \"Service Unavailable\"\n}",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        }
+      ],
+      "event": [],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      }
+    },
+    {
+      "id": "da81c4fd-4954-4b59-9784-0da4a71e07f5",
+      "name": "Poll forecast job status and artifact list",
+      "request": {
+        "name": "Poll forecast job status and artifact list",
+        "description": {
+          "content": "Returns the current status and artifact metadata for a forecast job you own.\nPoll this endpoint until `status` is `completed` or `failed`. Once completed,\ndownload output files via `GET /api/v1/forecasts/{id}/artifacts/{name}`.\n\nJobs tombstoned by the retention policy return 404.\n",
+          "type": "text/plain"
+        },
+        "url": {
+          "path": [
+            "api",
+            "v1",
+            "forecasts",
+            ":id"
+          ],
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "query": [],
+          "variable": [
+            {
+              "disabled": false,
+              "type": "any",
+              "value": "<uuid>",
+              "key": "id",
+              "description": "(Required) Forecast job id returned by `POST /api/v1/forecasts`."
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "method": "GET",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{bearerToken}}"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "id": "5d774ea7-ae12-4a0c-92c1-cb6bc7be49c9",
+          "name": "Job status and artifact metadata.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "forecasts",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) Forecast job id returned by `POST /api/v1/forecasts`."
+                }
+              ]
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"job_id\": \"c7f2d8a9-3b4e-5f6a-7c8d-9e0f1a2b3c4d\",\n  \"status\": \"completed\",\n  \"settled\": true,\n  \"pipeline_error\": null,\n  \"artifacts\": [\n    {\n      \"name\": \"forecast.json\",\n      \"href\": \"/api/v1/forecasts/c7f2d8a9-3b4e-5f6a-7c8d-9e0f1a2b3c4d/artifacts/forecast.json\",\n      \"content_type\": \"application/json\",\n      \"size\": 4096\n    },\n    {\n      \"name\": \"backtest_metrics.json\",\n      \"href\": \"/api/v1/forecasts/c7f2d8a9-3b4e-5f6a-7c8d-9e0f1a2b3c4d/artifacts/backtest_metrics.json\",\n      \"content_type\": \"application/json\",\n      \"size\": 1280\n    }\n  ]\n}",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        },
+        {
+          "id": "a1a1fe03-96da-428c-a008-fafd62351ba0",
+          "name": "Missing or invalid bearer token.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "forecasts",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) Forecast job id returned by `POST /api/v1/forecasts`."
+                }
+              ]
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "Unauthorized",
+          "code": 401,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "",
+          "cookie": [],
+          "_postman_previewlanguage": "text"
+        },
+        {
+          "id": "1821f5bf-f3e5-4dec-8375-e09a629aa84a",
+          "name": "Forecast job not found, not owned by the caller, or removed by the retention policy.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "forecasts",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) Forecast job id returned by `POST /api/v1/forecasts`."
+                }
+              ]
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "Not Found",
+          "code": 404,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "",
+          "cookie": [],
+          "_postman_previewlanguage": "text"
+        }
+      ],
+      "event": [],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      }
+    },
+    {
+      "id": "7e18a19f-2303-4876-adf0-06b887741217",
+      "name": "Download a forecast output file",
+      "request": {
+        "name": "Download a forecast output file",
+        "description": {
+          "content": "Streams a single output file for a completed forecast job.\n\nAvailable artifacts:\n- `forecast.json` — point forecast values for each horizon month\n- `backtest_metrics.json` — accuracy metrics from the backtest evaluation (only when `backtest: true`)\n- `backtest_trajectories.json` — full trajectory samples from the backtest (only when `backtest: true`)\n- `external_signals.json` — external driver signals used by the model\n- `input.json` — the processed input timeseries as seen by the pipeline\n\nThe response body is the raw file bytes; the `Content-Type` header matches the\nartifact's `content_type` field from `GET /api/v1/forecasts/{id}`.\nSupports HTTP `Range` requests for partial downloads.\nJobs tombstoned by the retention policy return 404.\n",
+          "type": "text/plain"
+        },
+        "url": {
+          "path": [
+            "api",
+            "v1",
+            "forecasts",
+            ":id",
+            "artifacts",
+            ":name"
+          ],
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "query": [],
+          "variable": [
+            {
+              "disabled": false,
+              "type": "any",
+              "value": "<uuid>",
+              "key": "id",
+              "description": "(Required) Forecast job id."
+            },
+            {
+              "disabled": false,
+              "type": "any",
+              "value": "<string>",
+              "key": "name",
+              "description": "(Required) Artifact filename (e.g. `forecast.json`)."
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/octet-stream"
+          }
+        ],
+        "method": "GET",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{bearerToken}}"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "id": "d61d6318-c356-4445-9764-7a4316f1e820",
+          "name": "Full artifact content.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "forecasts",
+                ":id",
+                "artifacts",
+                ":name"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) Forecast job id."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "name",
+                  "description": "(Required) Artifact filename (e.g. `forecast.json`)."
+                }
+              ]
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/octet-stream"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/octet-stream"
+            }
+          ],
+          "body": "string",
+          "cookie": [],
+          "_postman_previewlanguage": "text"
+        },
+        {
+          "id": "aca0bdc3-ca70-4fba-b487-f76d3b6f3867",
+          "name": "Partial content — response to a `Range` request.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "forecasts",
+                ":id",
+                "artifacts",
+                ":name"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) Forecast job id."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "name",
+                  "description": "(Required) Artifact filename (e.g. `forecast.json`)."
+                }
+              ]
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "Partial Content",
+          "code": 206,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "",
+          "cookie": [],
+          "_postman_previewlanguage": "text"
+        },
+        {
+          "id": "e6128346-4c43-44ec-b6d6-e369ad02000c",
+          "name": "Missing or invalid bearer token.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "forecasts",
+                ":id",
+                "artifacts",
+                ":name"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) Forecast job id."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "name",
+                  "description": "(Required) Artifact filename (e.g. `forecast.json`)."
+                }
+              ]
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "Unauthorized",
+          "code": 401,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "",
+          "cookie": [],
+          "_postman_previewlanguage": "text"
+        },
+        {
+          "id": "43d81f7a-e091-4a0b-8fcb-5f1eebaaadd5",
+          "name": "Forecast job or artifact not found, not owned by the caller, or removed by the retention policy.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "forecasts",
+                ":id",
+                "artifacts",
+                ":name"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) Forecast job id."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "name",
+                  "description": "(Required) Artifact filename (e.g. `forecast.json`)."
+                }
+              ]
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "Not Found",
+          "code": 404,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "",
+          "cookie": [],
+          "_postman_previewlanguage": "text"
+        }
+      ],
+      "event": [],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      }
+    },
+    {
+      "id": "22ff129e-f3ab-4e81-805d-95badac1d3ce",
+      "name": "List your async jobs",
+      "request": {
+        "name": "List your async jobs",
+        "description": {
+          "content": "Returns async jobs as a paginated list, sorted and filtered by the query\nparameters. Heavy fields (payload, artifact manifest) are omitted — fetch\nfull per-job state via `GET /api/v1/forecasts/{id}`.\n\nJobs tombstoned by the retention policy are excluded here and return 404\non the detail endpoint.\n",
+          "type": "text/plain"
+        },
+        "url": {
+          "path": [
+            "api",
+            "v1",
+            "jobs"
+          ],
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "query": [
+            {
+              "disabled": false,
+              "key": "page",
+              "value": "1",
+              "description": "1-indexed page number."
+            },
+            {
+              "disabled": false,
+              "key": "limit",
+              "value": "50",
+              "description": "Page size. Capped at 200."
+            },
+            {
+              "disabled": false,
+              "key": "sort",
+              "value": "created_at",
+              "description": "Column to sort by."
+            },
+            {
+              "disabled": false,
+              "key": "order",
+              "value": "desc",
+              "description": "Sort direction."
+            },
+            {
+              "disabled": false,
+              "key": "status",
+              "value": "<string>",
+              "description": "Filter to jobs in this status."
+            },
+            {
+              "disabled": false,
+              "key": "pipeline_type",
+              "value": "<string>",
+              "description": "Filter to jobs of this pipeline type (currently only `forecast` is emitted)."
+            }
+          ],
+          "variable": []
+        },
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "method": "GET",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{bearerToken}}"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "id": "1093f36e-2f0e-49fc-ae5f-2da33bbd4a06",
+          "name": "Paginated job list.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "jobs"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "50"
+                },
+                {
+                  "key": "sort",
+                  "value": "created_at"
+                },
+                {
+                  "key": "order",
+                  "value": "desc"
+                },
+                {
+                  "key": "status",
+                  "value": "<string>"
+                },
+                {
+                  "key": "pipeline_type",
+                  "value": "<string>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"jobs\": [\n    {\n      \"job_id\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\",\n      \"pipeline_type\": \"forecast\",\n      \"status\": \"completed\",\n      \"created_at\": \"2026-05-01T10:00:00Z\",\n      \"settled\": true,\n      \"settled_at\": \"2026-05-01T10:04:32Z\",\n      \"eur_cents_final\": 250\n    },\n    {\n      \"job_id\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\",\n      \"pipeline_type\": \"forecast\",\n      \"status\": \"completed\",\n      \"created_at\": \"2026-05-01T10:00:00Z\",\n      \"settled\": true,\n      \"settled_at\": \"2026-05-01T10:04:32Z\",\n      \"eur_cents_final\": 250\n    }\n  ],\n  \"pagination\": {\n    \"page\": 4116,\n    \"limit\": 98,\n    \"total\": 8607,\n    \"total_pages\": 703,\n    \"sort\": \"created_at\",\n    \"order\": \"desc\"\n  }\n}",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        },
+        {
+          "id": "421d6c3b-c367-4fc5-8a4b-4a12d07ef4da",
+          "name": "Invalid query parameter — bad `page`, `limit`, `sort`, or `order` value.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "jobs"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "50"
+                },
+                {
+                  "key": "sort",
+                  "value": "created_at"
+                },
+                {
+                  "key": "order",
+                  "value": "desc"
+                },
+                {
+                  "key": "status",
+                  "value": "<string>"
+                },
+                {
+                  "key": "pipeline_type",
+                  "value": "<string>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "",
+          "cookie": [],
+          "_postman_previewlanguage": "text"
+        },
+        {
+          "id": "63e738f2-b63b-49de-aa84-907ce79f7907",
+          "name": "Missing or invalid bearer token.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "jobs"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "50"
+                },
+                {
+                  "key": "sort",
+                  "value": "created_at"
+                },
+                {
+                  "key": "order",
+                  "value": "desc"
+                },
+                {
+                  "key": "status",
+                  "value": "<string>"
+                },
+                {
+                  "key": "pipeline_type",
+                  "value": "<string>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "Unauthorized",
+          "code": 401,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "",
+          "cookie": [],
+          "_postman_previewlanguage": "text"
+        },
+        {
+          "id": "e22cc159-08fc-40c2-85f2-5ab350365f05",
+          "name": "Rate limit exceeded.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "jobs"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "50"
+                },
+                {
+                  "key": "sort",
+                  "value": "created_at"
+                },
+                {
+                  "key": "order",
+                  "value": "desc"
+                },
+                {
+                  "key": "status",
+                  "value": "<string>"
+                },
+                {
+                  "key": "pipeline_type",
+                  "value": "<string>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "Too Many Requests",
+          "code": 429,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "",
+          "cookie": [],
+          "_postman_previewlanguage": "text"
+        }
+      ],
+      "event": [],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      }
+    },
+    {
+      "id": "c9badcab-6f59-46cb-8b8d-0dd015ee4210",
+      "name": "Account snapshot — balance, tier, and credit tranches",
+      "request": {
+        "name": "Account snapshot — balance, tier, and credit tranches",
+        "description": {
+          "content": "Returns the account snapshot for the current user: credit balance, active\ncredit tranches, auto-recharge settings, and current pricing tier. All\nmonetary fields are integer EUR cents (1 EUR = 100 cents).\n",
+          "type": "text/plain"
+        },
+        "url": {
+          "path": [
+            "api",
+            "v1",
+            "me"
+          ],
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "method": "GET",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{bearerToken}}"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "id": "5fd697b2-8579-4719-8f74-3f6ce4b4b601",
+          "name": "Account snapshot for the authenticated user.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "me"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"user_id\": \"2f738d4e-9a44-e00f-b4e6-40f0a14855b5\",\n  \"balance_eur_cents\": 5032,\n  \"available_eur_cents\": 2411,\n  \"api_usage_tier\": 199,\n  \"lifetime_paid_cents\": 5785,\n  \"payment_count\": 8697,\n  \"has_ever_paid\": true,\n  \"role\": \"admin\",\n  \"euro_tranches\": [\n    {\n      \"id\": \"fe1276a7-298b-fc36-05ce-ccbc8669d011\",\n      \"source\": \"string\",\n      \"initial_eur_cents\": 8360,\n      \"remaining_eur_cents\": 4411,\n      \"expires_at\": \"2026-08-11T01:30:22.102Z\",\n      \"created_at\": \"1999-10-31T10:53:33.506Z\"\n    },\n    {\n      \"id\": \"e25cf519-8045-a548-dd53-fd413706c523\",\n      \"source\": \"string\",\n      \"initial_eur_cents\": 2703,\n      \"remaining_eur_cents\": 103,\n      \"expires_at\": \"1980-10-03T05:29:50.512Z\",\n      \"created_at\": \"2018-09-16T11:09:13.207Z\"\n    }\n  ],\n  \"auto_recharge\": {\n    \"enabled\": true,\n    \"below_eur_cents\": 500,\n    \"target_eur_cents\": 5000,\n    \"monthly_cap_cents\": 20000,\n    \"meter_cents\": 3500,\n    \"has_stripe_customer\": true\n  },\n  \"signup_trial\": {\n    \"expires_at\": \"2009-12-23T15:34:40.670Z\",\n    \"granted_at\": \"1972-01-28T00:55:04.694Z\",\n    \"initial_eur_cents\": 9523,\n    \"remaining_eur_cents\": 4244\n  }\n}",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        },
+        {
+          "id": "5d9bc0a5-a369-4ba4-a29d-c083e2bb60c9",
+          "name": "Missing or invalid bearer token.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "me"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "Unauthorized",
+          "code": 401,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "",
+          "cookie": [],
+          "_postman_previewlanguage": "text"
+        }
+      ],
+      "event": [],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      }
+    },
+    {
+      "id": "c4f0a2fe-4e0f-4428-a29b-0fc761470785",
+      "name": "List available geographic regions",
+      "request": {
+        "name": "List available geographic regions",
+        "description": {
+          "content": "Returns the full list of geographic regions available for filtering forecasts,\ndriver searches, and alert detection. Use the `id` value from each entry\nin the `filters.regions` field of your requests.\n\nThis is a discovery endpoint — region ids are **not** validated on submit,\nso you can filter by any integer in 1–9999, but this listing shows the ones\nthat actually exist in the catalog.\n",
+          "type": "text/plain"
+        },
+        "url": {
+          "path": [
+            "api",
+            "v1",
+            "regions"
+          ],
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "method": "GET",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{bearerToken}}"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "id": "11341753-ea64-4513-8944-b5293cba6a80",
+          "name": "Full region listing, sorted by `id` ascending.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "regions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"items\": [\n    {\n      \"id\": 42,\n      \"name\": \"Europe\",\n      \"latitude\": 48,\n      \"longitude\": 10\n    },\n    {\n      \"id\": 88,\n      \"name\": \"North America\",\n      \"latitude\": 40,\n      \"longitude\": -100\n    }\n  ]\n}",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        },
+        {
+          "id": "4192d214-e5b5-473e-b36c-8db42cb3162b",
+          "name": "Missing or invalid bearer token.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "regions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "Unauthorized",
+          "code": 401,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "",
+          "cookie": [],
+          "_postman_previewlanguage": "text"
+        },
+        {
+          "id": "283625cb-d60b-4953-b03e-c7d0d8c02ea8",
+          "name": "Catalog service error or unreachable.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "regions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "Bad Gateway",
+          "code": 502,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "",
+          "cookie": [],
+          "_postman_previewlanguage": "text"
+        },
+        {
+          "id": "e17efe90-ce91-4885-8e0a-a2c8cae4e9a5",
+          "name": "Service Unavailable",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "regions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "Service Unavailable",
+          "code": 503,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"error\": \"Service Unavailable\"\n}",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        }
+      ],
+      "event": [],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      }
+    },
+    {
+      "id": "7dd74172-b2b7-4529-845a-9bd4f2c8d60a",
+      "name": "Billing history (paginated usage events)",
+      "request": {
+        "name": "Billing history (paginated usage events)",
+        "description": {
+          "content": "Returns billing history as a paginated list of usage events. Each event\nrepresents one charge — either a completed async job or a synchronous billed\nAPI call. Use `sort` and `order` to control the result order.\n",
+          "type": "text/plain"
+        },
+        "url": {
+          "path": [
+            "api",
+            "v1",
+            "usage"
+          ],
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "query": [
+            {
+              "disabled": false,
+              "key": "page",
+              "value": "1",
+              "description": "1-indexed page number."
+            },
+            {
+              "disabled": false,
+              "key": "limit",
+              "value": "50",
+              "description": "Page size. Capped at 200."
+            },
+            {
+              "disabled": false,
+              "key": "sort",
+              "value": "id",
+              "description": "Column to sort by."
+            },
+            {
+              "disabled": false,
+              "key": "order",
+              "value": "desc",
+              "description": "Sort direction."
+            }
+          ],
+          "variable": []
+        },
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "method": "GET",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{bearerToken}}"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "id": "226eac47-edee-4584-b604-c866424e2e3b",
+          "name": "Paginated billing history.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "usage"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "50"
+                },
+                {
+                  "key": "sort",
+                  "value": "id"
+                },
+                {
+                  "key": "order",
+                  "value": "desc"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"pagination\": {\n    \"page\": 1,\n    \"limit\": 50,\n    \"total\": 2,\n    \"total_pages\": 1,\n    \"sort\": \"id\",\n    \"order\": \"desc\"\n  },\n  \"usage_events\": [\n    {\n      \"id\": 8471,\n      \"endpoint\": \"drivers\",\n      \"units\": 20,\n      \"credits_charged\": 22,\n      \"eur_cents_charged\": 22,\n      \"created_at\": \"2026-05-24T14:32:10Z\",\n      \"async_job_id\": null\n    },\n    {\n      \"id\": 8320,\n      \"endpoint\": \"forecast\",\n      \"units\": 1,\n      \"credits_charged\": 250,\n      \"eur_cents_charged\": 250,\n      \"created_at\": \"2026-05-01T10:04:32Z\",\n      \"async_job_id\": \"a1b2c3d4-e5f6-7890-abcd-ef1234567890\"\n    }\n  ]\n}",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        },
+        {
+          "id": "6cc5943a-a54e-460d-92fe-4787b0fdff5e",
+          "name": "Invalid query parameter — bad `page`, `limit`, `sort`, or `order` value.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "usage"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "50"
+                },
+                {
+                  "key": "sort",
+                  "value": "id"
+                },
+                {
+                  "key": "order",
+                  "value": "desc"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "",
+          "cookie": [],
+          "_postman_previewlanguage": "text"
+        },
+        {
+          "id": "5ce3048c-71a8-4411-9308-086bf01d3705",
+          "name": "Missing or invalid bearer token.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "usage"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "50"
+                },
+                {
+                  "key": "sort",
+                  "value": "id"
+                },
+                {
+                  "key": "order",
+                  "value": "desc"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "description": {
+                  "content": "Added as a part of security scheme: bearer",
+                  "type": "text/plain"
+                },
+                "key": "Authorization",
+                "value": "Bearer <token>"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "Unauthorized",
+          "code": 401,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "body": "",
+          "cookie": [],
+          "_postman_previewlanguage": "text"
+        }
+      ],
+      "event": [],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      }
+    },
+    {
+      "id": "7b8b19f8-0920-439c-82e5-1b6c5968b8ba",
+      "name": "Service health check",
+      "request": {
+        "name": "Service health check",
+        "description": {
+          "content": "Liveness check. Returns `status` (\"ok\" or \"degraded\") and a `components` map\nwhere each key is a functional component name and each value reports its current\nstate. A 200 means all components are healthy; 503 means at least one is in an\nerror state.\n",
+          "type": "text/plain"
+        },
+        "url": {
+          "path": [
+            "health"
+          ],
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "method": "GET",
+        "auth": null
+      },
+      "response": [
+        {
+          "id": "9f2c5d3d-7614-4c81-8769-291b1e7de7e5",
+          "name": "All components healthy.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "health"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"status\": \"ok\",\n  \"components\": {\n    \"data_storage\": {\n      \"status\": \"ok\"\n    },\n    \"object_storage\": {\n      \"status\": \"ok\"\n    },\n    \"workflow_engine\": {\n      \"status\": \"ok\"\n    }\n  }\n}",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        },
+        {
+          "id": "caea2c0b-40df-4a41-99d9-449b7f1c2e6e",
+          "name": "Degraded — at least one component is in an error state.",
+          "originalRequest": {
+            "url": {
+              "path": [
+                "health"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "status": "Service Unavailable",
+          "code": 503,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"status\": \"degraded\",\n  \"components\": {\n    \"data_storage\": {\n      \"status\": \"ok\"\n    },\n    \"object_storage\": {\n      \"status\": \"ok\"\n    },\n    \"workflow_engine\": {\n      \"status\": \"error\"\n    }\n  }\n}",
+          "cookie": [],
+          "_postman_previewlanguage": "json"
+        }
+      ],
+      "event": [],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      }
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "/",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "0a83eaf1-99f0-4065-a550-9ac2c1f5ccc6",
+    "name": "Sybilion API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Sybilion API powers the Sybilion Developers Portal: forecasts, drivers, catalog, account\nand usage. Authenticate every request with `Authorization: Bearer <token>` using either an\nAPI key created in the Developers Portal or an Auth0 access token from your dashboard session.\n",
+      "type": "text/plain"
+    }
+  }
+}
