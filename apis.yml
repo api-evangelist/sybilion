@@ -60,93 +60,291 @@ tags_raw:
   - Causal inference
   - Anomaly detection
 apis:
-  - name: Sybilion Operational API
-    description: >-
-      REST API exposing asynchronous forecasts with quantile bands and driver attribution, ranked
-      external drivers, alerts, the region/category catalog, account balance and tier, and paginated
-      billing history. OpenAPI 3.0.3 with 11 operations and 22 schemas, served anonymously at
-      https://api.sybilion.dev/openapi.yaml. Uses HTTP Bearer authentication with API keys
-      (sk_ops_...) or Auth0 JWT session tokens. Forecasts are async (202 + job_id, poll, download
-      artifacts); drivers and alerts are synchronous and billed, with X-Request-ID retry dedupe.
-    humanURL: https://sybilion.dev/docs/
-    baseURL: https://api.sybilion.dev
-    tags:
-      - Industrial market intelligence
-      - Commodity price forecasting
-      - Economic Forecasting
-      - Time-series forecasting
-      - Procurement
-      - Supply Chain Risk
-      - Trading analytics
-      - AI decision support
-    tags_raw:
-      - Industrial market intelligence
-      - Commodity price forecasting
-      - Economic forecasting
-      - Time-series forecasting
-      - Procurement
-      - Supply-chain risk
-      - Trading analytics
-      - AI decision support
-    properties:
-      - type: OpenAPI
-        url: openapi/sybilion-operational-api-openapi.yml
-      - type: OpenAPI
-        url: https://api.sybilion.dev/openapi.yaml
-      - type: Documentation
-        url: https://sybilion.dev/docs/
-      - type: APIReference
-        url: https://api.sybilion.dev/docs
-      - type: Overlay
-        url: overlays/sybilion-operational-api-overlay.yaml
-      - type: Authentication
-        url: authentication/sybilion-authentication.yml
-      - type: Conventions
-        url: conventions/sybilion-conventions.yml
-      - type: Idempotency
-        url: conventions/sybilion-conventions.yml
-      - type: ErrorCatalog
-        url: errors/sybilion-problem-types.yml
-      - type: DataModel
-        url: data-model/sybilion-data-model.yml
-      - type: RateLimits
-        url: rate-limits/sybilion-rate-limits.yml
-      - type: AgenticAccess
-        url: agentic-access/sybilion-agentic-access.yml
-  - name: Sybilion MCP Server
-    description: >-
-      Hosted Streamable-HTTP MCP server providing agent-native tools for forecasts
-      (submit_forecast, get_forecast, get_forecast_chart, get_forecast_artifact), alerts
-      (get_alerts) and catalog discovery (list_regions, list_categories), with an OAuth 2.1
-      authorization-code + PKCE browser approval flow, RFC 8414 and RFC 9728 discovery documents and
-      RFC 7591 dynamic client registration. Anonymous tools/list returns 401, so live input schemas
-      are auth-gated. Documented integrations include ChatGPT, Claude and the TradingView Remix
-      extension. Notably exposes no tool for POST /api/v1/drivers.
-    humanURL: https://sybilion.dev/docs/integrations
-    baseURL: https://mcp.sybilion.dev/mcp
-    tags:
-      - MCP
-      - agent-native
-      - AI decision support
-      - Economic Forecasting
-      - Time-series forecasting
-    tags_raw:
-      - MCP
-      - Agent-native
-      - AI decision support
-      - Economic forecasting
-      - Time-series forecasting
-    properties:
-      - type: MCPServer
-        url: mcp/sybilion-mcp.yml
-      - type: MCPServer
-        url: https://mcp.sybilion.dev/mcp
-      - type: ToolCrosswalk
-        url: mcp/sybilion-tool-crosswalk.yml
-      - type: OAuthScopes
-        url: scopes/sybilion-scopes.yml
-      - type: Documentation
-        url: https://sybilion.dev/docs/integrations
+- name: Sybilion MCP Server
+  description: >-
+    Hosted Streamable-HTTP MCP server providing agent-native tools for forecasts (submit_forecast, get_forecast,
+    get_forecast_chart, get_forecast_artifact), alerts (get_alerts) and catalog discovery (list_regions,
+    list_categories), with an OAuth 2.1 authorization-code + PKCE browser approval flow, RFC 8414 and
+    RFC 9728 discovery documents and RFC 7591 dynamic client registration. Anonymous tools/list returns
+    401, so live input schemas are auth-gated. Documented integrations include ChatGPT, Claude and the
+    TradingView Remix extension. Notably exposes no tool for POST /api/v1/drivers.
+  humanURL: https://sybilion.dev/docs/integrations
+  baseURL: https://mcp.sybilion.dev/mcp
+  tags:
+  - MCP
+  - agent-native
+  - AI decision support
+  - Economic Forecasting
+  - Time-series forecasting
+  tags_raw:
+  - MCP
+  - Agent-native
+  - AI decision support
+  - Economic forecasting
+  - Time-series forecasting
+  properties:
+  - type: MCPServer
+    url: mcp/sybilion-mcp.yml
+  - type: MCPServer
+    url: https://mcp.sybilion.dev/mcp
+  - type: ToolCrosswalk
+    url: mcp/sybilion-tool-crosswalk.yml
+  - type: OAuthScopes
+    url: scopes/sybilion-scopes.yml
+  - type: Documentation
+    url: https://sybilion.dev/docs/integrations
+- aid: sybilion:sybilion-alerts-api
+  name: Sybilion Alerts API
+  description: The Alerts API from Sybilion — 1 operation(s) for alerts.
+  humanURL: https://sybilion.dev/docs/
+  baseURL: https://api.sybilion.dev
+  tags:
+  - Alerts
+  properties:
+  - type: OpenAPI
+    url: openapi/sybilion-alerts-api-openapi.yml
+  - type: Documentation
+    url: https://sybilion.dev/docs/
+  - type: APIReference
+    url: https://api.sybilion.dev/docs
+  - type: Authentication
+    url: authentication/sybilion-authentication.yml
+  - type: Conventions
+    url: conventions/sybilion-conventions.yml
+  - type: Idempotency
+    url: conventions/sybilion-conventions.yml
+  - type: ErrorCatalog
+    url: errors/sybilion-problem-types.yml
+  - type: DataModel
+    url: data-model/sybilion-data-model.yml
+  - type: RateLimits
+    url: rate-limits/sybilion-rate-limits.yml
+  - type: AgenticAccess
+    url: agentic-access/sybilion-agentic-access.yml
+- aid: sybilion:sybilion-categories-api
+  name: Sybilion Categories API
+  description: The Categories API from Sybilion — 1 operation(s) for categories.
+  humanURL: https://sybilion.dev/docs/
+  baseURL: https://api.sybilion.dev
+  tags:
+  - Categories
+  properties:
+  - type: OpenAPI
+    url: openapi/sybilion-categories-api-openapi.yml
+  - type: Documentation
+    url: https://sybilion.dev/docs/
+  - type: APIReference
+    url: https://api.sybilion.dev/docs
+  - type: Authentication
+    url: authentication/sybilion-authentication.yml
+  - type: Conventions
+    url: conventions/sybilion-conventions.yml
+  - type: Idempotency
+    url: conventions/sybilion-conventions.yml
+  - type: ErrorCatalog
+    url: errors/sybilion-problem-types.yml
+  - type: DataModel
+    url: data-model/sybilion-data-model.yml
+  - type: RateLimits
+    url: rate-limits/sybilion-rate-limits.yml
+  - type: AgenticAccess
+    url: agentic-access/sybilion-agentic-access.yml
+- aid: sybilion:sybilion-drivers-api
+  name: Sybilion Drivers API
+  description: The Drivers API from Sybilion — 1 operation(s) for drivers.
+  humanURL: https://sybilion.dev/docs/
+  baseURL: https://api.sybilion.dev
+  tags:
+  - Drivers
+  properties:
+  - type: OpenAPI
+    url: openapi/sybilion-drivers-api-openapi.yml
+  - type: Documentation
+    url: https://sybilion.dev/docs/
+  - type: APIReference
+    url: https://api.sybilion.dev/docs
+  - type: Authentication
+    url: authentication/sybilion-authentication.yml
+  - type: Conventions
+    url: conventions/sybilion-conventions.yml
+  - type: Idempotency
+    url: conventions/sybilion-conventions.yml
+  - type: ErrorCatalog
+    url: errors/sybilion-problem-types.yml
+  - type: DataModel
+    url: data-model/sybilion-data-model.yml
+  - type: RateLimits
+    url: rate-limits/sybilion-rate-limits.yml
+  - type: AgenticAccess
+    url: agentic-access/sybilion-agentic-access.yml
+- aid: sybilion:sybilion-forecasts-api
+  name: Sybilion Forecasts API
+  description: The Forecasts API from Sybilion — 3 operation(s) for forecasts.
+  humanURL: https://sybilion.dev/docs/
+  baseURL: https://api.sybilion.dev
+  tags:
+  - Forecasts
+  properties:
+  - type: OpenAPI
+    url: openapi/sybilion-forecasts-api-openapi.yml
+  - type: Documentation
+    url: https://sybilion.dev/docs/
+  - type: APIReference
+    url: https://api.sybilion.dev/docs
+  - type: Authentication
+    url: authentication/sybilion-authentication.yml
+  - type: Conventions
+    url: conventions/sybilion-conventions.yml
+  - type: Idempotency
+    url: conventions/sybilion-conventions.yml
+  - type: ErrorCatalog
+    url: errors/sybilion-problem-types.yml
+  - type: DataModel
+    url: data-model/sybilion-data-model.yml
+  - type: RateLimits
+    url: rate-limits/sybilion-rate-limits.yml
+  - type: AgenticAccess
+    url: agentic-access/sybilion-agentic-access.yml
+- aid: sybilion:sybilion-health-api
+  name: Sybilion Health API
+  description: The Health API from Sybilion — 1 operation(s) for health.
+  humanURL: https://sybilion.dev/docs/
+  baseURL: https://api.sybilion.dev
+  tags:
+  - Health
+  properties:
+  - type: OpenAPI
+    url: openapi/sybilion-health-api-openapi.yml
+  - type: Documentation
+    url: https://sybilion.dev/docs/
+  - type: APIReference
+    url: https://api.sybilion.dev/docs
+  - type: Authentication
+    url: authentication/sybilion-authentication.yml
+  - type: Conventions
+    url: conventions/sybilion-conventions.yml
+  - type: Idempotency
+    url: conventions/sybilion-conventions.yml
+  - type: ErrorCatalog
+    url: errors/sybilion-problem-types.yml
+  - type: DataModel
+    url: data-model/sybilion-data-model.yml
+  - type: RateLimits
+    url: rate-limits/sybilion-rate-limits.yml
+  - type: AgenticAccess
+    url: agentic-access/sybilion-agentic-access.yml
+- aid: sybilion:sybilion-jobs-api
+  name: Sybilion Jobs API
+  description: The Jobs API from Sybilion — 1 operation(s) for jobs.
+  humanURL: https://sybilion.dev/docs/
+  baseURL: https://api.sybilion.dev
+  tags:
+  - Jobs
+  properties:
+  - type: OpenAPI
+    url: openapi/sybilion-jobs-api-openapi.yml
+  - type: Documentation
+    url: https://sybilion.dev/docs/
+  - type: APIReference
+    url: https://api.sybilion.dev/docs
+  - type: Authentication
+    url: authentication/sybilion-authentication.yml
+  - type: Conventions
+    url: conventions/sybilion-conventions.yml
+  - type: Idempotency
+    url: conventions/sybilion-conventions.yml
+  - type: ErrorCatalog
+    url: errors/sybilion-problem-types.yml
+  - type: DataModel
+    url: data-model/sybilion-data-model.yml
+  - type: RateLimits
+    url: rate-limits/sybilion-rate-limits.yml
+  - type: AgenticAccess
+    url: agentic-access/sybilion-agentic-access.yml
+- aid: sybilion:sybilion-me-api
+  name: Sybilion Me API
+  description: The Me API from Sybilion — 1 operation(s) for me.
+  humanURL: https://sybilion.dev/docs/
+  baseURL: https://api.sybilion.dev
+  tags:
+  - Me
+  properties:
+  - type: OpenAPI
+    url: openapi/sybilion-me-api-openapi.yml
+  - type: Documentation
+    url: https://sybilion.dev/docs/
+  - type: APIReference
+    url: https://api.sybilion.dev/docs
+  - type: Authentication
+    url: authentication/sybilion-authentication.yml
+  - type: Conventions
+    url: conventions/sybilion-conventions.yml
+  - type: Idempotency
+    url: conventions/sybilion-conventions.yml
+  - type: ErrorCatalog
+    url: errors/sybilion-problem-types.yml
+  - type: DataModel
+    url: data-model/sybilion-data-model.yml
+  - type: RateLimits
+    url: rate-limits/sybilion-rate-limits.yml
+  - type: AgenticAccess
+    url: agentic-access/sybilion-agentic-access.yml
+- aid: sybilion:sybilion-regions-api
+  name: Sybilion Regions API
+  description: The Regions API from Sybilion — 1 operation(s) for regions.
+  humanURL: https://sybilion.dev/docs/
+  baseURL: https://api.sybilion.dev
+  tags:
+  - Regions
+  properties:
+  - type: OpenAPI
+    url: openapi/sybilion-regions-api-openapi.yml
+  - type: Documentation
+    url: https://sybilion.dev/docs/
+  - type: APIReference
+    url: https://api.sybilion.dev/docs
+  - type: Authentication
+    url: authentication/sybilion-authentication.yml
+  - type: Conventions
+    url: conventions/sybilion-conventions.yml
+  - type: Idempotency
+    url: conventions/sybilion-conventions.yml
+  - type: ErrorCatalog
+    url: errors/sybilion-problem-types.yml
+  - type: DataModel
+    url: data-model/sybilion-data-model.yml
+  - type: RateLimits
+    url: rate-limits/sybilion-rate-limits.yml
+  - type: AgenticAccess
+    url: agentic-access/sybilion-agentic-access.yml
+- aid: sybilion:sybilion-usage-api
+  name: Sybilion Usage API
+  description: The Usage API from Sybilion — 1 operation(s) for usage.
+  humanURL: https://sybilion.dev/docs/
+  baseURL: https://api.sybilion.dev
+  tags:
+  - Usage
+  properties:
+  - type: OpenAPI
+    url: openapi/sybilion-usage-api-openapi.yml
+  - type: Documentation
+    url: https://sybilion.dev/docs/
+  - type: APIReference
+    url: https://api.sybilion.dev/docs
+  - type: Authentication
+    url: authentication/sybilion-authentication.yml
+  - type: Conventions
+    url: conventions/sybilion-conventions.yml
+  - type: Idempotency
+    url: conventions/sybilion-conventions.yml
+  - type: ErrorCatalog
+    url: errors/sybilion-problem-types.yml
+  - type: DataModel
+    url: data-model/sybilion-data-model.yml
+  - type: RateLimits
+    url: rate-limits/sybilion-rate-limits.yml
+  - type: AgenticAccess
+    url: agentic-access/sybilion-agentic-access.yml
 common:
   - type: DeveloperPortal
     url: https://sybilion.dev/
