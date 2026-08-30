@@ -1,0 +1,116 @@
+openapi: 3.2.0
+info:
+  description: 'The Sybilion API powers the Sybilion Developers Portal: forecasts, drivers, catalog, account
+
+    and usage. Authenticate every request with `Authorization: Bearer <token>` using either an
+
+    API key created in the Developers Portal or an Auth0 access token from your dashboard session.
+
+    '
+  title: Sybilion Regions API
+  version: 0.1.0
+servers:
+- url: /
+tags:
+- name: Regions
+paths:
+  /api/v1/regions:
+    get:
+      description: 'Returns the full list of geographic regions available for filtering forecasts,
+
+        driver searches, and alert detection. Use the `id` value from each entry
+
+        in the `filters.regions` field of your requests.
+
+
+        This is a discovery endpoint — region ids are **not** validated on submit,
+
+        so you can filter by any integer in 1–9999, but this listing shows the ones
+
+        that actually exist in the catalog.
+
+        '
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                items:
+                - id: 42
+                  name: Europe
+                  latitude: 48.0
+                  longitude: 10.0
+                - id: 88
+                  name: North America
+                  latitude: 40.0
+                  longitude: -100.0
+              schema:
+                $ref: '#/components/schemas/RegionListResponse'
+          description: Full region listing, sorted by `id` ascending.
+        '401':
+          description: Missing or invalid bearer token.
+        '502':
+          description: Catalog service error or unreachable.
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+              example:
+                error: Service Unavailable
+      security:
+      - bearerAuth: []
+      summary: List available geographic regions
+      tags:
+      - Regions
+components:
+  schemas:
+    RegionListResponse:
+      properties:
+        items:
+          description: Complete region listing, sorted by id ascending. No pagination.
+          items:
+            $ref: '#/components/schemas/RegionItemV1'
+          type: array
+      required:
+      - items
+      type: object
+    RegionItemV1:
+      description: A single geographic region returned by GET /api/v1/regions.
+      properties:
+        id:
+          description: Integer identifier. Use this value in filters.regions[].
+          type: integer
+        latitude:
+          description: Geographic latitude (0.0 when not applicable).
+          format: double
+          type: number
+        longitude:
+          description: Geographic longitude (0.0 when not applicable).
+          format: double
+          type: number
+        name:
+          description: Human-readable region label.
+          type: string
+      required:
+      - id
+      - name
+      - latitude
+      - longitude
+      type: object
+    ErrorMessage:
+      properties:
+        error:
+          description: Human-readable error message.
+          type: string
+        trace_id:
+          description: Correlation id for this request, also returned in the X-Trace-Id response header. Quote it when contacting support so the request can be traced.
+          type: string
+      required:
+      - error
+      type: object
+  securitySchemes:
+    bearerAuth:
+      scheme: bearer
+      type: http

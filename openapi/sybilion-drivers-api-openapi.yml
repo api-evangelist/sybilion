@@ -1,0 +1,333 @@
+openapi: 3.2.0
+info:
+  description: 'The Sybilion API powers the Sybilion Developers Portal: forecasts, drivers, catalog, account
+
+    and usage. Authenticate every request with `Authorization: Bearer <token>` using either an
+
+    API key created in the Developers Portal or an Auth0 access token from your dashboard session.
+
+    '
+  title: Sybilion Drivers API
+  version: 0.1.0
+servers:
+- url: /
+tags:
+- name: Drivers
+paths:
+  /api/v1/drivers:
+    post:
+      description: 'Retrieves drivers ranked by how well they explain your timeseries, returning
+
+        a scored list of potential economic drivers. Results are ordered by relevance
+
+        score descending.
+
+
+        This is a synchronous billed endpoint — you are charged per driver returned.
+
+        No charge is recorded on validation errors or upstream failures.
+
+        '
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecommendRequestV1'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                status: 200
+                message: Success
+                data:
+                  drivers:
+                  - hash_id: d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9
+                    driver_name: Natural Gas Futures Price (Henry Hub)
+                    score: 0.87
+                  - hash_id: e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0
+                    driver_name: US Dollar Index (DXY)
+                    score: 0.74
+              schema:
+                properties:
+                  data:
+                    properties:
+                      drivers:
+                        items:
+                          $ref: '#/components/schemas/DriverItemV1'
+                        type: array
+                    type: object
+                  message:
+                    example: Success
+                    type: string
+                  status:
+                    type: integer
+                type: object
+          description: Ranked driver candidates for your timeseries.
+        '400':
+          description: Malformed JSON body.
+        '401':
+          description: Missing or invalid bearer token.
+        '402':
+          description: Insufficient credits — the request did not reach the upstream service.
+        '413':
+          description: Request body too large.
+        '422':
+          content:
+            application/json:
+              example:
+                error: validation_failed
+                details:
+                - field: timeseries_metadata.title
+                  message: title must be at least 20 characters
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+          description: Payload failed validation.
+        '429':
+          description: Rate limit exceeded — too many synchronous billed requests per minute.
+        '502':
+          description: Upstream service error or unreachable.
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+              example:
+                error: Service Unavailable
+      security:
+      - bearerAuth: []
+      summary: Rank driver datasets for your timeseries
+      tags:
+      - Drivers
+components:
+  schemas:
+    ErrorMessage:
+      properties:
+        error:
+          description: Human-readable error message.
+          type: string
+        trace_id:
+          description: Correlation id for this request, also returned in the X-Trace-Id response header. Quote it when contacting support so the request can be traced.
+          type: string
+      required:
+      - error
+      type: object
+    RecommendRequestV1:
+      description: 'Body of `POST /api/v1/drivers`. Mirrors the upstream Recommend service
+
+        contract. Note that the version field is named `version` (not
+
+        `pipeline_version` as on `/forecasts`).
+
+
+        Required fields: `version`, `recency_factor`, `timeseries_metadata`.
+
+        Both `filters` and `timeseries` are optional — when omitted, the handler
+
+        drops them from the upstream payload entirely (no `null` is sent).
+
+        When `filters.limit` is omitted, a per-environment default is applied.
+
+        '
+      example:
+        version: v1
+        recency_factor: 0.6
+        timeseries_metadata:
+          title: Brent Crude Oil Price Monthly
+          description: Monthly average Brent crude oil spot price in USD/barrel, sourced from EIA.
+          keywords:
+          - oil
+          - brent
+          - energy
+          - commodity
+        filters:
+          limit: 20
+          categories:
+          - 3
+          - 7
+          regions:
+          - 42
+        timeseries:
+          '2023-07-01': 79.6
+          '2023-08-01': 84.77
+          '2023-09-01': 93.39
+          '2023-10-01': 91.05
+          '2023-11-01': 81.77
+          '2023-12-01': 76.1
+      properties:
+        filters:
+          allOf:
+          - $ref: '#/components/schemas/Filters'
+          description: 'Optional. Each **`categories[]`** and **`regions[]`** entry must be an integer **1–9999**
+
+            (inclusive). Optional **`limit`** is **0–1000** (default **100** when omitted).
+
+            Values are not verified against catalog APIs.
+
+            '
+        recency_factor:
+          description: Weight given to more recent observations when ranking drivers. 0.0 = equal weight; 1.0 = strongest recency bias.
+          format: double
+          maximum: 1
+          minimum: 0
+          type: number
+        timeseries:
+          additionalProperties:
+            type: number
+          description: 'Optional. Map of YYYY-MM-DD date keys to numeric observation values.
+
+            When supplied, all keys must parse as YYYY-MM-DD and all values must
+
+            be finite. Unlike `/forecasts`, this endpoint is frequency-agnostic —
+
+            no monthly alignment, gap detection, or minimum length is enforced.
+
+            When omitted, the handler does not forward the field upstream.
+
+            '
+          type: object
+        timeseries_metadata:
+          allOf:
+          - $ref: '#/components/schemas/TimeseriesMetadata'
+          description: Describes the series so the ranking model can identify relevant drivers.
+        version:
+          description: 'Recommend pipeline version. Closed set; only `v1` is supported today.
+
+            Used locally to select the per-version validator and is **not forwarded**
+
+            to the upstream Recommend service.
+
+            '
+          enum:
+          - v1
+          type: string
+      required:
+      - version
+      - recency_factor
+      - timeseries_metadata
+      type: object
+    Filters:
+      description: 'Optional narrowing for forecast, drivers, and alerts requests.
+
+        Category and region ids must fall in **1–9999**. Discover valid ids via
+
+        `GET /api/v1/regions` and `GET /api/v1/categories` — submitted ids are not
+
+        cross-checked on submit.
+
+        '
+      example:
+        categories:
+        - 3
+        - 7
+        regions:
+        - 42
+        - 88
+        limit: 25
+      properties:
+        categories:
+          description: Thematic category ids to filter by; each must be an integer **1–9999** inclusive.
+          items:
+            maximum: 9999
+            minimum: 1
+            type: integer
+          type: array
+        general_drivers:
+          description: When true, general (non category/region-specific) drivers are included in the driver candidate pool. Defaults to false.
+          type: boolean
+        limit:
+          description: Maximum number of items to return. When omitted, a per-environment default is applied (100 by default). The maximum accepted value is operator-configurable (default 1000).
+          maximum: 1000
+          minimum: 0
+          type: integer
+        regions:
+          description: Geographic region ids to filter by; each must be an integer **1–9999** inclusive.
+          items:
+            maximum: 9999
+            minimum: 1
+            type: integer
+          type: array
+      type: object
+    TimeseriesMetadata:
+      description: Descriptive metadata the ranking model uses to interpret and contextualize the timeseries.
+      example:
+        title: Brent Crude Oil Price Monthly
+        description: Monthly average Brent crude oil spot price in USD/barrel, sourced from EIA.
+        keywords:
+        - oil
+        - brent
+        - energy
+        - commodity
+        - barrel
+      properties:
+        description:
+          description: Extended context for the model, up to 2048 characters. More detail improves driver relevance.
+          maxLength: 2048
+          type: string
+        keywords:
+          description: Up to 20 semantic tags that help anchor the search to relevant datasets.
+          items:
+            maxLength: 255
+            minLength: 1
+            type: string
+          maxItems: 20
+          type: array
+        title:
+          description: Short identifier for the series, 20–511 characters.
+          maxLength: 511
+          minLength: 20
+          type: string
+      required:
+      - title
+      type: object
+    DriverItemV1:
+      description: A ranked dataset candidate returned by `POST /api/v1/drivers`.
+      example:
+        hash_id: d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9
+        driver_name: Natural Gas Futures Price (Henry Hub)
+        score: 0.87
+      properties:
+        driver_name:
+          description: Human-readable name of the dataset.
+          type: string
+        hash_id:
+          description: Stable identifier for the dataset; use to reference this driver across requests.
+          type: string
+        score:
+          description: Relevance score indicating how well this dataset explains your timeseries (higher is more relevant).
+          format: double
+          type: number
+      type: object
+    ValidationErrorResponse:
+      example:
+        error: validation_failed
+        details:
+        - field: metadata.title
+          message: title must be at least 20 characters
+      properties:
+        details:
+          items:
+            properties:
+              field:
+                type: string
+              message:
+                type: string
+            required:
+            - field
+            - message
+            type: object
+          type: array
+        error:
+          enum:
+          - validation_failed
+          type: string
+      required:
+      - error
+      - details
+      type: object
+  securitySchemes:
+    bearerAuth:
+      scheme: bearer
+      type: http

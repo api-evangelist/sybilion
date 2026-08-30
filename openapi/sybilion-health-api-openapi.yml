@@ -1,0 +1,96 @@
+openapi: 3.2.0
+info:
+  description: 'The Sybilion API powers the Sybilion Developers Portal: forecasts, drivers, catalog, account
+
+    and usage. Authenticate every request with `Authorization: Bearer <token>` using either an
+
+    API key created in the Developers Portal or an Auth0 access token from your dashboard session.
+
+    '
+  title: Sybilion Health API
+  version: 0.1.0
+servers:
+- url: /
+tags:
+- name: Health
+paths:
+  /health:
+    get:
+      description: 'Liveness check. Returns `status` ("ok" or "degraded") and a `components` map
+
+        where each key is a functional component name and each value reports its current
+
+        state. A 200 means all components are healthy; 503 means at least one is in an
+
+        error state.
+
+        '
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                status: ok
+                components:
+                  data_storage:
+                    status: ok
+                  object_storage:
+                    status: ok
+                  workflow_engine:
+                    status: ok
+              schema:
+                properties:
+                  status:
+                    description: Overall health — "ok" when all components are healthy, "degraded" otherwise.
+                    enum:
+                    - ok
+                    - degraded
+                    type: string
+                  components:
+                    description: Per-component status map. Keys are functional names (e.g. data_storage, workflow_engine).
+                    additionalProperties:
+                      properties:
+                        status:
+                          enum:
+                          - ok
+                          - error
+                          type: string
+                      type: object
+                    type: object
+                type: object
+          description: All components healthy.
+        '503':
+          content:
+            application/json:
+              example:
+                status: degraded
+                components:
+                  data_storage:
+                    status: ok
+                  object_storage:
+                    status: ok
+                  workflow_engine:
+                    status: error
+              schema:
+                properties:
+                  status:
+                    enum:
+                    - degraded
+                    type: string
+                  components:
+                    additionalProperties:
+                      properties:
+                        status:
+                          type: string
+                      type: object
+                    type: object
+                type: object
+          description: Degraded — at least one component is in an error state.
+      summary: Service health check
+      tags:
+      - Health
+components:
+  securitySchemes:
+    bearerAuth:
+      scheme: bearer
+      type: http

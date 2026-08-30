@@ -1,0 +1,104 @@
+openapi: 3.2.0
+info:
+  description: 'The Sybilion API powers the Sybilion Developers Portal: forecasts, drivers, catalog, account
+
+    and usage. Authenticate every request with `Authorization: Bearer <token>` using either an
+
+    API key created in the Developers Portal or an Auth0 access token from your dashboard session.
+
+    '
+  title: Sybilion Categories API
+  version: 0.1.0
+servers:
+- url: /
+tags:
+- name: Categories
+paths:
+  /api/v1/categories:
+    get:
+      description: 'Returns the full list of thematic categories available for filtering forecasts,
+
+        driver searches, and alert detection. Use the `id` values from this response
+
+        in the `filters.categories` field of your requests.
+
+
+        This is a discovery endpoint — category ids are **not** validated on submit,
+
+        so you can filter by any integer in 1–9999, but this listing shows the ones
+
+        that actually exist in the catalog.
+
+        '
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                items:
+                - id: 3
+                  name: Energy
+                - id: 7
+                  name: Commodities
+                - id: 14
+                  name: Financials
+              schema:
+                $ref: '#/components/schemas/CategoryListResponse'
+          description: Full category listing, sorted by `id` ascending.
+        '401':
+          description: Missing or invalid bearer token.
+        '502':
+          description: Catalog service error or unreachable.
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+              example:
+                error: Service Unavailable
+      security:
+      - bearerAuth: []
+      summary: List available thematic categories
+      tags:
+      - Categories
+components:
+  schemas:
+    CategoryListResponse:
+      properties:
+        items:
+          description: Complete category listing, sorted by id ascending. No pagination.
+          items:
+            $ref: '#/components/schemas/CategoryItemV1'
+          type: array
+      required:
+      - items
+      type: object
+    ErrorMessage:
+      properties:
+        error:
+          description: Human-readable error message.
+          type: string
+        trace_id:
+          description: Correlation id for this request, also returned in the X-Trace-Id response header. Quote it when contacting support so the request can be traced.
+          type: string
+      required:
+      - error
+      type: object
+    CategoryItemV1:
+      description: A single thematic category returned by GET /api/v1/categories.
+      properties:
+        id:
+          description: Integer identifier. Use this value in filters.categories[].
+          type: integer
+        name:
+          description: Human-readable category label.
+          type: string
+      required:
+      - id
+      - name
+      type: object
+  securitySchemes:
+    bearerAuth:
+      scheme: bearer
+      type: http

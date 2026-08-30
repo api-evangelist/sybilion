@@ -1,0 +1,319 @@
+openapi: 3.2.0
+info:
+  description: 'The Sybilion API powers the Sybilion Developers Portal: forecasts, drivers, catalog, account
+
+    and usage. Authenticate every request with `Authorization: Bearer <token>` using either an
+
+    API key created in the Developers Portal or an Auth0 access token from your dashboard session.
+
+    '
+  title: Sybilion Alerts API
+  version: 0.1.0
+servers:
+- url: /
+tags:
+- name: Alerts
+paths:
+  /api/v1/alerts:
+    post:
+      description: 'Finds alerts related to the provided metadata.
+
+
+        This is a synchronous billed endpoint — you are charged per alert returned.
+
+        No charge is recorded on validation errors or upstream failures.
+
+        '
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertsRequestV1'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  alerts:
+                    items:
+                      $ref: '#/components/schemas/AlertItemV1'
+                    type: array
+                type: object
+          description: Alerts detected for your timeseries, ordered by relevance.
+        '400':
+          description: Malformed JSON body.
+        '401':
+          description: Missing or invalid bearer token.
+        '402':
+          description: Insufficient credits — the request did not reach the upstream service.
+        '413':
+          description: Request body too large.
+        '422':
+          content:
+            application/json:
+              example:
+                error: validation_failed
+                details:
+                - field: metadata.title
+                  message: title must be at least 20 characters
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+          description: Payload failed validation.
+        '429':
+          description: Rate limit exceeded — too many synchronous billed requests per minute.
+        '502':
+          description: Upstream service error or unreachable.
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+              example:
+                error: Service Unavailable
+      security:
+      - bearerAuth: []
+      summary: Detect anomaly alerts for your timeseries
+      tags:
+      - Alerts
+components:
+  schemas:
+    ErrorMessage:
+      properties:
+        error:
+          description: Human-readable error message.
+          type: string
+        trace_id:
+          description: Correlation id for this request, also returned in the X-Trace-Id response header. Quote it when contacting support so the request can be traced.
+          type: string
+      required:
+      - error
+      type: object
+    AlertsRequestV1:
+      description: 'Body of `POST /api/v1/alerts`.
+
+
+        `filters.limit` controls how many alerts are returned (default **100**, max **1000**).
+
+        `date_from` / `date_to` are optional date bounds (YYYY-MM-DD).
+
+        '
+      example:
+        context_enriched: true
+        date_from: '2024-01-01'
+        date_to: '2026-05-26'
+        filters:
+          categories:
+          - 3
+          - 7
+          regions:
+          - 42
+          limit: 10
+        metadata:
+          description: Monthly average Brent crude oil spot price in USD/barrel, sourced from EIA.
+          keywords:
+          - oil
+          - brent
+          - energy
+          - commodity
+          - barrel
+          title: Brent Crude Oil Price Monthly
+      properties:
+        context_enriched:
+          description: When true, treat the supplied metadata as already context-enriched.
+          type: boolean
+        date_from:
+          description: Optional start date bound for alert detection (YYYY-MM-DD).
+          type: string
+        date_to:
+          description: Optional end date bound for alert detection (YYYY-MM-DD).
+          type: string
+        filters:
+          allOf:
+          - $ref: '#/components/schemas/Filters'
+          description: 'Optional. `limit` controls the number of alerts returned (**0–1000**, default **100**).
+
+            `categories[]` and `regions[]` narrow the alert universe; each must be an integer **1–9999**.
+
+            Values are not verified against catalog APIs.
+
+            '
+        metadata:
+          $ref: '#/components/schemas/TimeseriesMetadata'
+      required:
+      - metadata
+      - context_enriched
+      type: object
+    AlertItemV1:
+      description: A single alert returned by the upstream Recommend service.
+      example:
+        trending: true
+        name: OMX Copenhagen Oil, Gas and Coal Price Index
+        pct_change: -7.14
+        news:
+        - trending: true
+          title: US-Iran agreed on principal deal to open Strait of Hormuz
+          description: The US and Iran have reportedly reached a preliminary understanding to reopen the Strait of Hormuz.
+          url: https://www.thenews.com.pk/latest/1403722
+          published_at: '2026-05-24T21:28:00Z'
+          source_name: The News International
+          category: world
+      properties:
+        name:
+          description: Human-readable name of the dataset or index that triggered the alert.
+          type: string
+        news:
+          description: Related news articles driving this alert.
+          items:
+            $ref: '#/components/schemas/NewsItemV1'
+          type: array
+        pct_change:
+          description: Percentage change that triggered the alert (negative = decline, positive = surge).
+          format: double
+          type: number
+        trending:
+          description: Whether this alert is currently trending across the platform.
+          type: boolean
+      type: object
+    NewsItemV1:
+      description: A news article associated with an alert.
+      example:
+        trending: true
+        title: US-Iran agreed on principal deal to open Strait of Hormuz
+        description: The US and Iran have reportedly reached a preliminary understanding to reopen the Strait of Hormuz, one of the world's most critical oil shipping routes.
+        url: https://www.thenews.com.pk/latest/1403722
+        published_at: '2026-05-24T21:28:00Z'
+        source_name: The News International
+        category: world
+      properties:
+        category:
+          description: Topical category of the article (e.g. `world`, `business`, `energy`).
+          type: string
+        description:
+          description: Short summary of the article.
+          type: string
+        published_at:
+          description: Publication timestamp (RFC 3339 / ISO 8601).
+          format: date-time
+          type: string
+        source_name:
+          description: Name of the publication or media outlet.
+          type: string
+        title:
+          description: Headline of the news article.
+          type: string
+        trending:
+          description: Whether this article is currently trending across the platform.
+          type: boolean
+        url:
+          description: Canonical URL of the article.
+          format: uri
+          type: string
+      type: object
+    Filters:
+      description: 'Optional narrowing for forecast, drivers, and alerts requests.
+
+        Category and region ids must fall in **1–9999**. Discover valid ids via
+
+        `GET /api/v1/regions` and `GET /api/v1/categories` — submitted ids are not
+
+        cross-checked on submit.
+
+        '
+      example:
+        categories:
+        - 3
+        - 7
+        regions:
+        - 42
+        - 88
+        limit: 25
+      properties:
+        categories:
+          description: Thematic category ids to filter by; each must be an integer **1–9999** inclusive.
+          items:
+            maximum: 9999
+            minimum: 1
+            type: integer
+          type: array
+        general_drivers:
+          description: When true, general (non category/region-specific) drivers are included in the driver candidate pool. Defaults to false.
+          type: boolean
+        limit:
+          description: Maximum number of items to return. When omitted, a per-environment default is applied (100 by default). The maximum accepted value is operator-configurable (default 1000).
+          maximum: 1000
+          minimum: 0
+          type: integer
+        regions:
+          description: Geographic region ids to filter by; each must be an integer **1–9999** inclusive.
+          items:
+            maximum: 9999
+            minimum: 1
+            type: integer
+          type: array
+      type: object
+    TimeseriesMetadata:
+      description: Descriptive metadata the ranking model uses to interpret and contextualize the timeseries.
+      example:
+        title: Brent Crude Oil Price Monthly
+        description: Monthly average Brent crude oil spot price in USD/barrel, sourced from EIA.
+        keywords:
+        - oil
+        - brent
+        - energy
+        - commodity
+        - barrel
+      properties:
+        description:
+          description: Extended context for the model, up to 2048 characters. More detail improves driver relevance.
+          maxLength: 2048
+          type: string
+        keywords:
+          description: Up to 20 semantic tags that help anchor the search to relevant datasets.
+          items:
+            maxLength: 255
+            minLength: 1
+            type: string
+          maxItems: 20
+          type: array
+        title:
+          description: Short identifier for the series, 20–511 characters.
+          maxLength: 511
+          minLength: 20
+          type: string
+      required:
+      - title
+      type: object
+    ValidationErrorResponse:
+      example:
+        error: validation_failed
+        details:
+        - field: metadata.title
+          message: title must be at least 20 characters
+      properties:
+        details:
+          items:
+            properties:
+              field:
+                type: string
+              message:
+                type: string
+            required:
+            - field
+            - message
+            type: object
+          type: array
+        error:
+          enum:
+          - validation_failed
+          type: string
+      required:
+      - error
+      - details
+      type: object
+  securitySchemes:
+    bearerAuth:
+      scheme: bearer
+      type: http

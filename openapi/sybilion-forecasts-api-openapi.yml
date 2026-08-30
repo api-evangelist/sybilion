@@ -1,0 +1,640 @@
+openapi: 3.2.0
+info:
+  description: 'The Sybilion API powers the Sybilion Developers Portal: forecasts, drivers, catalog, account
+
+    and usage. Authenticate every request with `Authorization: Bearer <token>` using either an
+
+    API key created in the Developers Portal or an Auth0 access token from your dashboard session.
+
+    '
+  title: Sybilion Forecasts API
+  version: 0.1.0
+servers:
+- url: /
+tags:
+- name: Forecasts
+paths:
+  /api/v1/forecasts:
+    post:
+      description: 'Submits a monthly forecast job. The job runs asynchronously — poll
+
+        `GET /api/v1/forecasts/{id}` until `status` is `completed` or `failed`.
+
+        Output files are then available via `GET /api/v1/forecasts/{id}/artifacts/{name}`.
+
+
+        The timeseries must contain at least the horizon-dependent minimum number of
+
+        monthly observations (40 for max horizon 1–3, 60 for 4–6, 120 for 7–12) aligned
+
+        to the first of each month. At least one of `soft_horizon` or `hard_horizon`
+
+        must be specified.
+
+        '
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForecastRequestV1'
+        required: true
+      responses:
+        '202':
+          content:
+            application/json:
+              example:
+                job_id: c7f2d8a9-3b4e-5f6a-7c8d-9e0f1a2b3c4d
+                poll_url: /api/v1/forecasts/c7f2d8a9-3b4e-5f6a-7c8d-9e0f1a2b3c4d
+                workflow: forecast-c7f2d8a9-3b4e-5f6a-7c8d-9e0f1a2b3c4d
+                run_id: 01JV7K4MGNBTZXQP8WR3Y5D6HF
+              schema:
+                properties:
+                  job_id:
+                    description: Unique job id — use this to poll status and download artifacts.
+                    format: uuid
+                    type: string
+                  poll_url:
+                    description: Convenience URL for polling this job's status.
+                    type: string
+                  run_id:
+                    description: Internal run identifier (opaque; useful for support).
+                    type: string
+                  workflow:
+                    description: Internal workflow identifier (opaque; useful for support).
+                    type: string
+                type: object
+          description: Job accepted. Use `job_id` to poll status.
+        '400':
+          description: Malformed JSON body.
+        '401':
+          description: Missing or invalid bearer token.
+        '402':
+          description: Insufficient credits.
+        '413':
+          description: Request body too large.
+        '422':
+          content:
+            application/json:
+              example:
+                error: validation_failed
+                details:
+                - field: soft_horizon
+                  message: soft_horizon must be between 1 and 12
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+          description: Payload failed validation.
+        '429':
+          description: Too many concurrent jobs for your tier.
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+              example:
+                error: Service Unavailable
+      security:
+      - bearerAuth: []
+      summary: Submit an async forecast job
+      tags:
+      - Forecasts
+  /api/v1/forecasts/{id}:
+    get:
+      description: 'Returns the current status and artifact metadata for a forecast job you own.
+
+        Poll this endpoint until `status` is `completed` or `failed`. Once completed,
+
+        download output files via `GET /api/v1/forecasts/{id}/artifacts/{name}`.
+
+
+        Jobs tombstoned by the retention policy return 404.
+
+        '
+      parameters:
+      - description: Forecast job id returned by `POST /api/v1/forecasts`.
+        in: path
+        name: id
+        required: true
+        schema:
+          format: uuid
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                job_id: c7f2d8a9-3b4e-5f6a-7c8d-9e0f1a2b3c4d
+                status: completed
+                settled: true
+                pipeline_error: null
+                artifacts:
+                - name: forecast.json
+                  href: /api/v1/forecasts/c7f2d8a9-3b4e-5f6a-7c8d-9e0f1a2b3c4d/artifacts/forecast.json
+                  content_type: application/json
+                  size: 4096
+                - name: backtest_metrics.json
+                  href: /api/v1/forecasts/c7f2d8a9-3b4e-5f6a-7c8d-9e0f1a2b3c4d/artifacts/backtest_metrics.json
+                  content_type: application/json
+                  size: 1280
+              schema:
+                properties:
+                  artifacts:
+                    description: List of output files available for download. Populated once the job completes.
+                    items:
+                      $ref: '#/components/schemas/ForecastArtifactMeta'
+                    type: array
+                  job_id:
+                    format: uuid
+                    type: string
+                  pipeline_error:
+                    description: 'Structured error from the pipeline for failed or canceled jobs; null otherwise.
+
+                      Common fields: `code` (string error code) and `detail` (human-readable explanation).
+
+                      Shape is defined by the pipeline and may vary.
+
+                      '
+                    type:
+                    - object
+                    - 'null'
+                  settled:
+                    description: True once the job has reached a terminal state and the charge has been posted.
+                    type: boolean
+                  status:
+                    description: Current lifecycle state of the job.
+                    enum:
+                    - queued
+                    - running
+                    - completed
+                    - failed
+                    - canceled
+                    type: string
+                type: object
+          description: Job status and artifact metadata.
+        '401':
+          description: Missing or invalid bearer token.
+        '404':
+          description: Forecast job not found, not owned by the caller, or removed by the retention policy.
+      security:
+      - bearerAuth: []
+      summary: Poll forecast job status and artifact list
+      tags:
+      - Forecasts
+  /api/v1/forecasts/{id}/artifacts/{name}:
+    get:
+      description: 'Streams a single output file for a completed forecast job.
+
+
+        Available artifacts:
+
+        - `forecast.json` — point forecast values for each horizon month
+
+        - `backtest_metrics.json` — accuracy metrics from the backtest evaluation (only when `backtest: true`)
+
+        - `backtest_trajectories.json` — full trajectory samples from the backtest (only when `backtest: true`)
+
+        - `external_signals.json` — external driver signals used by the model
+
+        - `input.json` — the processed input timeseries as seen by the pipeline
+
+
+        The response body is the raw file bytes; the `Content-Type` header matches the
+
+        artifact''s `content_type` field from `GET /api/v1/forecasts/{id}`.
+
+        Supports HTTP `Range` requests for partial downloads.
+
+        Jobs tombstoned by the retention policy return 404.
+
+        '
+      parameters:
+      - description: Forecast job id.
+        in: path
+        name: id
+        required: true
+        schema:
+          format: uuid
+          type: string
+      - description: Artifact filename (e.g. `forecast.json`).
+        in: path
+        name: name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/octet-stream:
+              schema:
+                format: binary
+                type: string
+          description: Full artifact content.
+        '206':
+          description: Partial content — response to a `Range` request.
+        '401':
+          description: Missing or invalid bearer token.
+        '404':
+          description: Forecast job or artifact not found, not owned by the caller, or removed by the retention policy.
+      security:
+      - bearerAuth: []
+      summary: Download a forecast output file
+      tags:
+      - Forecasts
+components:
+  schemas:
+    ErrorMessage:
+      properties:
+        error:
+          description: Human-readable error message.
+          type: string
+        trace_id:
+          description: Correlation id for this request, also returned in the X-Trace-Id response header. Quote it when contacting support so the request can be traced.
+          type: string
+      required:
+      - error
+      type: object
+    ForecastArtifactMeta:
+      description: Metadata for a single output file produced by a completed forecast job.
+      example:
+        name: forecast.json
+        href: /api/v1/forecasts/a1b2c3d4-e5f6-7890-abcd-ef1234567890/artifacts/forecast.json
+        content_type: application/json
+        size: 4096
+      properties:
+        content_type:
+          description: MIME type of the artifact (e.g. `application/json`).
+          type: string
+        href:
+          description: Relative URL to stream via `GET /api/v1/forecasts/{id}/artifacts/{name}`.
+          type: string
+        name:
+          description: Artifact filename (e.g. `forecast.json`, `backtest_metrics.json`).
+          type: string
+        size:
+          description: File size in bytes.
+          format: int64
+          type: integer
+      type: object
+    ForecastRequestV1:
+      description: 'Body of `POST /api/v1/forecasts`. Submit a monthly timeseries and the pipeline
+
+        produces a forward forecast (and optionally a backtest). At least one of
+
+        `soft_horizon` or `hard_horizon` must be present.
+
+
+        The minimum number of monthly observations depends on the largest requested
+
+        horizon (`max(soft_horizon, hard_horizon)`): **40** points for horizons 1–3,
+
+        **60** for 4–6, and **120** for 7–12. Observations must be aligned to the first
+
+        of each month (YYYY-MM-01). `recency_factor` controls how strongly the
+
+        driver-selection step weights recent data.
+
+        '
+      example:
+        pipeline_version: v1
+        frequency: monthly
+        recency_factor: 0.6
+        soft_horizon: 6
+        hard_horizon: 3
+        backtest: true
+        timeseries_metadata:
+          title: Brent Crude Oil Price Monthly
+          description: Monthly average Brent crude oil spot price in USD/barrel, sourced from EIA.
+          keywords:
+          - oil
+          - brent
+          - energy
+          - commodity
+        timeseries:
+          '2021-01-01': 57.64
+          '2021-02-01': 65.02
+          '2021-03-01': 67.24
+          '2021-04-01': 71.07
+          '2021-05-01': 70.25
+          '2021-06-01': 65.5
+          '2021-07-01': 64.25
+          '2021-08-01': 58.96
+          '2021-09-01': 62.01
+          '2021-10-01': 59.87
+          '2021-11-01': 63.43
+          '2021-12-01': 66.52
+          '2022-01-01': 63.65
+          '2022-02-01': 55.66
+          '2022-03-01': 33.73
+          '2022-04-01': 26.63
+          '2022-05-01': 29.85
+          '2022-06-01': 40.8
+          '2022-07-01': 43.51
+          '2022-08-01': 44.98
+          '2022-09-01': 42.96
+          '2022-10-01': 41.53
+          '2022-11-01': 43.72
+          '2022-12-01': 51.22
+          '2023-01-01': 55.3
+          '2023-02-01': 61.19
+          '2023-03-01': 65.36
+          '2023-04-01': 65.79
+          '2023-05-01': 67.77
+          '2023-06-01': 73.93
+          '2023-07-01': 75.53
+          '2023-08-01': 70.82
+          '2023-09-01': 73.54
+          '2023-10-01': 84.36
+          '2023-11-01': 82.6
+          '2023-12-01': 74.62
+          '2024-01-01': 83.39
+          '2024-02-01': 96.84
+          '2024-03-01': 117.25
+          '2024-04-01': 104.64
+          '2024-05-01': 113.03
+          '2024-06-01': 119.18
+          '2024-07-01': 105.58
+          '2024-08-01': 97.88
+          '2024-09-01': 91.68
+          '2024-10-01': 93.6
+          '2024-11-01': 93.47
+          '2024-12-01': 82.66
+          '2025-01-01': 81.14
+          '2025-02-01': 82.8
+          '2025-03-01': 77.91
+          '2025-04-01': 84.94
+          '2025-05-01': 75.52
+          '2025-06-01': 75.29
+          '2025-07-01': 79.6
+          '2025-08-01': 84.77
+          '2025-09-01': 93.39
+          '2025-10-01': 91.05
+          '2025-11-01': 81.77
+          '2025-12-01': 76.1
+        filters:
+          categories:
+          - 3
+          regions:
+          - 42
+      properties:
+        aux_timeseries:
+          description: 'Optional. One to ten auxiliary driver series. Each item is a map of the same
+
+            YYYY-MM-DD date keys as `timeseries` — exactly the same dates, no more and no
+
+            fewer — to numeric values. Each series becomes a forecast driver that is kept
+
+            through feature selection, and series are identified by their array position
+
+            (the first is `aux_0`, the second `aux_1`, and so on). When omitted, the
+
+            forecast runs without auxiliary drivers.
+
+            '
+          type: array
+          minItems: 1
+          maxItems: 10
+          items:
+            additionalProperties:
+              type: number
+            type: object
+        backtest:
+          description: When true, run a backtest evaluation alongside the forecast and include `backtest_metrics.json` and `backtest_trajectories.json` in the artifacts.
+          type: boolean
+        filters:
+          allOf:
+          - $ref: '#/components/schemas/Filters'
+          description: 'Optional. Each **`categories[]`** and **`regions[]`** entry must be an integer **1–9999**
+
+            (inclusive). Optional **`limit`** is **0–1000** (default **100** when omitted). Values are not verified against catalog APIs.
+
+            '
+        frequency:
+          description: Series cadence. Only `monthly` is currently supported.
+          enum:
+          - monthly
+          type: string
+        hard_horizon:
+          description: 'Minimum acceptable horizon (months) for the quality step-down ladder. When omitted, the
+
+            pipeline falls back to a driverless forecast at `soft_horizon` if no quality run succeeds.
+
+            When still failing at `hard_horizon`, the pipeline emits a driverless forecast at that horizon.
+
+            At least one of `soft_horizon` or `hard_horizon` must be present. When both are set,
+
+            `hard_horizon` must be less than or equal to `soft_horizon`. Maximum 12.
+
+            '
+          maximum: 12
+          minimum: 1
+          type: integer
+        max_num_features:
+          description: 'Optional. Caps the number of drivers kept by the final feature-selection step
+
+            (top-k). When omitted, the pipeline uses the regime default. Bounded above by the
+
+            regime''s selector ceiling, so a value larger than that cap is a no-op. Must be a
+
+            positive integer when present.
+
+            '
+          minimum: 1
+          type: integer
+        optimization_budget:
+          default: none
+          description: 'Optional. Tunes the number of hyper-parameter-optimization trials. `low` runs fewer
+
+            trials, `high` runs the most; `none` and `mid` fall back to the pipeline default.
+
+            Defaults to `none`.
+
+            '
+          enum:
+          - none
+          - low
+          - mid
+          - high
+          type: string
+        pipeline_version:
+          description: Pipeline version. Closed set — only `v1` is supported today.
+          enum:
+          - v1
+          type: string
+        recency_factor:
+          description: Weight given to more recent observations when selecting drivers. 0.0 = equal weight across the full history; 1.0 = strongest recency bias.
+          format: double
+          maximum: 1
+          minimum: 0
+          type: number
+        run_baseline:
+          default: false
+          description: 'When true, re-run the same primary model with drivers stripped and surface its
+
+            metrics as a self-comparison baseline alongside the reference baselines, isolating
+
+            the lift the drivers add. Defaults to false.
+
+            '
+          type: boolean
+        soft_horizon:
+          description: 'Ideal forecast horizon (months). The pipeline tries this first, then steps down by one month
+
+            until it reaches `hard_horizon` (when set) while seeking a quality forecast. At least one of
+
+            `soft_horizon` or `hard_horizon` must be present. When both are set, `hard_horizon` must be
+
+            less than or equal to `soft_horizon`. Maximum 12.
+
+            '
+          maximum: 12
+          minimum: 1
+          type: integer
+        strictly_positive:
+          default: false
+          description: 'When true, every value in `timeseries` must be `>= 0`; a single negative observation
+
+            rejects the request with 422. The pipeline also clamps output values at zero.
+
+            Defaults to false.
+
+            '
+          type: boolean
+        timeseries:
+          additionalProperties:
+            type: number
+          description: 'Map of YYYY-MM-DD date keys to numeric observation values. Must contain at least
+
+            the horizon-dependent minimum number of monthly observations (40 for max horizon 1–3,
+
+            60 for 4–6, 120 for 7–12) aligned to the first of each month.
+
+            '
+          type: object
+        timeseries_metadata:
+          allOf:
+          - $ref: '#/components/schemas/TimeseriesMetadata'
+          description: Describes the series so the pipeline can identify relevant drivers.
+        trend_num_classes:
+          description: 'Optional. Trend-classification label granularity: `2` (binary up/down) or `3`
+
+            (down/flat/up). Consumed only on the trend analysis path and ignored otherwise.
+
+            When omitted, the pipeline applies its default of `3`.
+
+            '
+          enum:
+          - 2
+          - 3
+          type: integer
+      required:
+      - pipeline_version
+      - frequency
+      - recency_factor
+      - timeseries_metadata
+      - timeseries
+      type: object
+    Filters:
+      description: 'Optional narrowing for forecast, drivers, and alerts requests.
+
+        Category and region ids must fall in **1–9999**. Discover valid ids via
+
+        `GET /api/v1/regions` and `GET /api/v1/categories` — submitted ids are not
+
+        cross-checked on submit.
+
+        '
+      example:
+        categories:
+        - 3
+        - 7
+        regions:
+        - 42
+        - 88
+        limit: 25
+      properties:
+        categories:
+          description: Thematic category ids to filter by; each must be an integer **1–9999** inclusive.
+          items:
+            maximum: 9999
+            minimum: 1
+            type: integer
+          type: array
+        general_drivers:
+          description: When true, general (non category/region-specific) drivers are included in the driver candidate pool. Defaults to false.
+          type: boolean
+        limit:
+          description: Maximum number of items to return. When omitted, a per-environment default is applied (100 by default). The maximum accepted value is operator-configurable (default 1000).
+          maximum: 1000
+          minimum: 0
+          type: integer
+        regions:
+          description: Geographic region ids to filter by; each must be an integer **1–9999** inclusive.
+          items:
+            maximum: 9999
+            minimum: 1
+            type: integer
+          type: array
+      type: object
+    TimeseriesMetadata:
+      description: Descriptive metadata the ranking model uses to interpret and contextualize the timeseries.
+      example:
+        title: Brent Crude Oil Price Monthly
+        description: Monthly average Brent crude oil spot price in USD/barrel, sourced from EIA.
+        keywords:
+        - oil
+        - brent
+        - energy
+        - commodity
+        - barrel
+      properties:
+        description:
+          description: Extended context for the model, up to 2048 characters. More detail improves driver relevance.
+          maxLength: 2048
+          type: string
+        keywords:
+          description: Up to 20 semantic tags that help anchor the search to relevant datasets.
+          items:
+            maxLength: 255
+            minLength: 1
+            type: string
+          maxItems: 20
+          type: array
+        title:
+          description: Short identifier for the series, 20–511 characters.
+          maxLength: 511
+          minLength: 20
+          type: string
+      required:
+      - title
+      type: object
+    ValidationErrorResponse:
+      example:
+        error: validation_failed
+        details:
+        - field: metadata.title
+          message: title must be at least 20 characters
+      properties:
+        details:
+          items:
+            properties:
+              field:
+                type: string
+              message:
+                type: string
+            required:
+            - field
+            - message
+            type: object
+          type: array
+        error:
+          enum:
+          - validation_failed
+          type: string
+      required:
+      - error
+      - details
+      type: object
+  securitySchemes:
+    bearerAuth:
+      scheme: bearer
+      type: http

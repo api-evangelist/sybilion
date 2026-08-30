@@ -1,0 +1,227 @@
+openapi: 3.2.0
+info:
+  description: 'The Sybilion API powers the Sybilion Developers Portal: forecasts, drivers, catalog, account
+
+    and usage. Authenticate every request with `Authorization: Bearer <token>` using either an
+
+    API key created in the Developers Portal or an Auth0 access token from your dashboard session.
+
+    '
+  title: Sybilion Jobs API
+  version: 0.1.0
+servers:
+- url: /
+tags:
+- name: Jobs
+paths:
+  /api/v1/jobs:
+    get:
+      description: 'Returns async jobs as a paginated list, sorted and filtered by the query
+
+        parameters. Heavy fields (payload, artifact manifest) are omitted — fetch
+
+        full per-job state via `GET /api/v1/forecasts/{id}`.
+
+
+        Jobs tombstoned by the retention policy are excluded here and return 404
+
+        on the detail endpoint.
+
+        '
+      parameters:
+      - description: 1-indexed page number.
+        in: query
+        name: page
+        required: false
+        schema:
+          default: 1
+          minimum: 1
+          type: integer
+      - description: Page size. Capped at 200.
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 50
+          maximum: 200
+          minimum: 1
+          type: integer
+      - description: Column to sort by.
+        in: query
+        name: sort
+        required: false
+        schema:
+          default: created_at
+          enum:
+          - id
+          - created_at
+          - settled_at
+          - eur_cents_final
+          type: string
+      - description: Sort direction.
+        in: query
+        name: order
+        required: false
+        schema:
+          default: desc
+          enum:
+          - asc
+          - desc
+          type: string
+      - description: Filter to jobs in this status.
+        in: query
+        name: status
+        required: false
+        schema:
+          enum:
+          - queued
+          - running
+          - completed
+          - failed
+          - canceled
+          type: string
+      - description: Filter to jobs of this pipeline type (currently only `forecast` is emitted).
+        in: query
+        name: pipeline_type
+        required: false
+        schema:
+          maxLength: 64
+          pattern: ^[a-z0-9_-]+$
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  jobs:
+                    items:
+                      $ref: '#/components/schemas/JobSummary'
+                    type: array
+                  pagination:
+                    $ref: '#/components/schemas/JobsPagination'
+                required:
+                - jobs
+                - pagination
+                type: object
+          description: Paginated job list.
+        '400':
+          description: Invalid query parameter — bad `page`, `limit`, `sort`, or `order` value.
+        '401':
+          description: Missing or invalid bearer token.
+        '429':
+          description: Rate limit exceeded.
+      security:
+      - bearerAuth: []
+      summary: List your async jobs
+      tags:
+      - Jobs
+components:
+  schemas:
+    JobSummary:
+      description: Lightweight summary of an async job (no payload or artifact manifest).
+      example:
+        job_id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+        pipeline_type: forecast
+        status: completed
+        created_at: '2026-05-01T10:00:00Z'
+        settled: true
+        settled_at: '2026-05-01T10:04:32Z'
+        eur_cents_final: 250
+      properties:
+        created_at:
+          format: date-time
+          type: string
+        eur_cents_final:
+          description: Final settled charge for the job in EUR cents. Null until the job reaches a terminal state.
+          format: int64
+          type:
+          - integer
+          - 'null'
+        job_id:
+          format: uuid
+          type: string
+        pipeline_type:
+          description: Pipeline that produced this job — currently always `forecast`.
+          type: string
+        run_id:
+          description: Opaque internal run identifier. Omitted for jobs that have not started yet; include in support requests.
+          type: string
+        settled:
+          description: True once the job has reached a terminal state and the charge has been posted.
+          type: boolean
+        settled_at:
+          format: date-time
+          type:
+          - string
+          - 'null'
+        status:
+          enum:
+          - queued
+          - running
+          - completed
+          - failed
+          - canceled
+          type: string
+        terminal_reason:
+          description: Human-readable failure message for `failed` or `canceled` jobs; null for non-terminal statuses or cleanly-canceled jobs.
+          type:
+          - string
+          - 'null'
+        workflow_id:
+          description: Opaque internal workflow identifier. Omitted for jobs that have not started yet; include in support requests.
+          type: string
+      required:
+      - job_id
+      - pipeline_type
+      - status
+      - created_at
+      - settled
+      type: object
+    JobsPagination:
+      properties:
+        limit:
+          description: Page size echoed back from the request.
+          maximum: 200
+          minimum: 1
+          type: integer
+        order:
+          description: Sort direction echoed back from the request.
+          enum:
+          - asc
+          - desc
+          type: string
+        page:
+          description: 1-indexed current page number echoed back from the request.
+          minimum: 1
+          type: integer
+        sort:
+          description: Column the rows are sorted by, echoed back from the request.
+          enum:
+          - id
+          - created_at
+          - settled_at
+          - eur_cents_final
+          type: string
+        total:
+          description: Total matching rows for the authenticated user (full set, not just this page).
+          format: int64
+          minimum: 0
+          type: integer
+        total_pages:
+          description: ceil(total / limit). Zero when total is zero.
+          format: int64
+          minimum: 0
+          type: integer
+      required:
+      - page
+      - limit
+      - total
+      - total_pages
+      - sort
+      - order
+      type: object
+  securitySchemes:
+    bearerAuth:
+      scheme: bearer
+      type: http
