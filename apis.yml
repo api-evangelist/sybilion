@@ -48,16 +48,16 @@ specificationVersion: '0.23'
 tags:
   - Industrial market intelligence
   - Commodity price forecasting
-  - Economic Forecasting
+  - Economic forecasting
   - Time-series forecasting
   - Procurement
-  - Supply Chain Risk
+  - Supply-chain risk
   - Trading analytics
   - AI decision support
   - MCP
-  - agent-native
-  - Causal Inference
-  - Anomaly Detection
+  - Agent-native
+  - Causal inference
+  - Anomaly detection
 tags_raw:
   - Industrial market intelligence
   - Commodity price forecasting
@@ -84,9 +84,9 @@ apis:
   baseURL: https://mcp.sybilion.dev/mcp
   tags:
   - MCP
-  - agent-native
+  - Agent-native
   - AI decision support
-  - Economic Forecasting
+  - Economic forecasting
   - Time-series forecasting
   tags_raw:
   - MCP
@@ -195,6 +195,8 @@ apis:
   humanURL: https://sybilion.dev/docs/
   baseURL: https://api.sybilion.dev
   tags:
+  - Forecast
+  tags_raw:
   - Forecasts
   properties:
   - type: OpenAPI
@@ -251,6 +253,8 @@ apis:
   humanURL: https://sybilion.dev/docs/
   baseURL: https://api.sybilion.dev
   tags:
+  - Job
+  tags_raw:
   - Jobs
   properties:
   - type: OpenAPI
