@@ -2,11 +2,9 @@ openapi: 3.2.0
 info:
   description: 'The Sybilion API powers the Sybilion Developers Portal: forecasts, drivers, catalog, account
 
-    and usage. Authenticate every request with `Authorization: Bearer <token>` using either an
+    and usage. Authenticate every request with `Authorization: Bearer ` using either an
 
-    API key created in the Developers Portal or an Auth0 access token from your dashboard session.
-
-    '
+    API key created in the Developers Portal or an Auth0 access token from your dashboard session.'
   title: Sybilion Me API
   version: 0.1.0
 servers:
@@ -20,9 +18,7 @@ paths:
 
         credit tranches, auto-recharge settings, and current pricing tier. All
 
-        monetary fields are integer EUR cents (1 EUR = 100 cents).
-
-        '
+        monetary fields are integer EUR cents (1 EUR = 100 cents).'
       responses:
         '200':
           content:
@@ -37,53 +33,10 @@ paths:
       summary: Account snapshot — balance, tier, and credit tranches
       tags:
       - Me
+      operationId: getApiV1Me
+      x-operation-id-source: derived
 components:
   schemas:
-    AutoRechargeState:
-      example:
-        enabled: true
-        below_eur_cents: 500
-        target_eur_cents: 5000
-        monthly_cap_cents: 20000
-        meter_cents: 3500
-        has_stripe_customer: true
-      properties:
-        below_eur_cents:
-          description: When the available balance drops below this many EUR cents, a recharge is triggered.
-          format: int64
-          type: integer
-        enabled:
-          description: Whether auto-recharge is active for this account.
-          type: boolean
-        has_stripe_customer:
-          description: Whether a Stripe customer record exists (required for auto-recharge to run).
-          type: boolean
-        meter_cents:
-          description: EUR cents charged via auto-recharge in the current UTC calendar month.
-          format: int64
-          type: integer
-        meter_month:
-          description: UTC month start for `meter_cents`; null if no auto-recharge has run this month.
-          format: date
-          type:
-          - string
-          - 'null'
-        monthly_cap_cents:
-          description: Maximum EUR cents that may be charged via auto-recharge per UTC calendar month. 0 = no cap.
-          format: int64
-          type: integer
-        target_eur_cents:
-          description: Balance target after a successful recharge, in EUR cents.
-          format: int64
-          type: integer
-      required:
-      - enabled
-      - below_eur_cents
-      - target_eur_cents
-      - monthly_cap_cents
-      - meter_cents
-      - has_stripe_customer
-      type: object
     EuroTranche:
       description: 'A time-limited credit allocation. Multiple tranches can be active simultaneously;
 
@@ -214,6 +167,51 @@ components:
       - has_ever_paid
       - role
       - euro_tranches
+      type: object
+    AutoRechargeState:
+      example:
+        enabled: true
+        below_eur_cents: 500
+        target_eur_cents: 5000
+        monthly_cap_cents: 20000
+        meter_cents: 3500
+        has_stripe_customer: true
+      properties:
+        below_eur_cents:
+          description: When the available balance drops below this many EUR cents, a recharge is triggered.
+          format: int64
+          type: integer
+        enabled:
+          description: Whether auto-recharge is active for this account.
+          type: boolean
+        has_stripe_customer:
+          description: Whether a Stripe customer record exists (required for auto-recharge to run).
+          type: boolean
+        meter_cents:
+          description: EUR cents charged via auto-recharge in the current UTC calendar month.
+          format: int64
+          type: integer
+        meter_month:
+          description: UTC month start for `meter_cents`; null if no auto-recharge has run this month.
+          format: date
+          type:
+          - string
+          - 'null'
+        monthly_cap_cents:
+          description: Maximum EUR cents that may be charged via auto-recharge per UTC calendar month. 0 = no cap.
+          format: int64
+          type: integer
+        target_eur_cents:
+          description: Balance target after a successful recharge, in EUR cents.
+          format: int64
+          type: integer
+      required:
+      - enabled
+      - below_eur_cents
+      - target_eur_cents
+      - monthly_cap_cents
+      - meter_cents
+      - has_stripe_customer
       type: object
   securitySchemes:
     bearerAuth:

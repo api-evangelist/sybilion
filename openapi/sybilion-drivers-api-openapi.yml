@@ -2,11 +2,9 @@ openapi: 3.2.0
 info:
   description: 'The Sybilion API powers the Sybilion Developers Portal: forecasts, drivers, catalog, account
 
-    and usage. Authenticate every request with `Authorization: Bearer <token>` using either an
+    and usage. Authenticate every request with `Authorization: Bearer ` using either an
 
-    API key created in the Developers Portal or an Auth0 access token from your dashboard session.
-
-    '
+    API key created in the Developers Portal or an Auth0 access token from your dashboard session.'
   title: Sybilion Drivers API
   version: 0.1.0
 servers:
@@ -25,9 +23,7 @@ paths:
 
         This is a synchronous billed endpoint — you are charged per driver returned.
 
-        No charge is recorded on validation errors or upstream failures.
-
-        '
+        No charge is recorded on validation errors or upstream failures.'
       requestBody:
         content:
           application/json:
@@ -101,18 +97,51 @@ paths:
       summary: Rank driver datasets for your timeseries
       tags:
       - Drivers
+      operationId: postApiV1Drivers
+      x-operation-id-source: derived
 components:
   schemas:
-    ErrorMessage:
+    Filters:
+      description: 'Optional narrowing for forecast, drivers, and alerts requests.
+
+        Category and region ids must fall in **1–9999**. Discover valid ids via
+
+        `GET /api/v1/regions` and `GET /api/v1/categories` — submitted ids are not
+
+        cross-checked on submit.
+
+        '
+      example:
+        categories:
+        - 3
+        - 7
+        regions:
+        - 42
+        - 88
+        limit: 25
       properties:
-        error:
-          description: Human-readable error message.
-          type: string
-        trace_id:
-          description: Correlation id for this request, also returned in the X-Trace-Id response header. Quote it when contacting support so the request can be traced.
-          type: string
-      required:
-      - error
+        categories:
+          description: Thematic category ids to filter by; each must be an integer **1–9999** inclusive.
+          items:
+            maximum: 9999
+            minimum: 1
+            type: integer
+          type: array
+        general_drivers:
+          description: When true, general (non category/region-specific) drivers are included in the driver candidate pool. Defaults to false.
+          type: boolean
+        limit:
+          description: Maximum number of items to return. When omitted, a per-environment default is applied (100 by default). The maximum accepted value is operator-configurable (default 1000).
+          maximum: 1000
+          minimum: 0
+          type: integer
+        regions:
+          description: Geographic region ids to filter by; each must be an integer **1–9999** inclusive.
+          items:
+            maximum: 9999
+            minimum: 1
+            type: integer
+          type: array
       type: object
     RecommendRequestV1:
       description: 'Body of `POST /api/v1/drivers`. Mirrors the upstream Recommend service
@@ -208,79 +237,16 @@ components:
       - recency_factor
       - timeseries_metadata
       type: object
-    Filters:
-      description: 'Optional narrowing for forecast, drivers, and alerts requests.
-
-        Category and region ids must fall in **1–9999**. Discover valid ids via
-
-        `GET /api/v1/regions` and `GET /api/v1/categories` — submitted ids are not
-
-        cross-checked on submit.
-
-        '
-      example:
-        categories:
-        - 3
-        - 7
-        regions:
-        - 42
-        - 88
-        limit: 25
+    ErrorMessage:
       properties:
-        categories:
-          description: Thematic category ids to filter by; each must be an integer **1–9999** inclusive.
-          items:
-            maximum: 9999
-            minimum: 1
-            type: integer
-          type: array
-        general_drivers:
-          description: When true, general (non category/region-specific) drivers are included in the driver candidate pool. Defaults to false.
-          type: boolean
-        limit:
-          description: Maximum number of items to return. When omitted, a per-environment default is applied (100 by default). The maximum accepted value is operator-configurable (default 1000).
-          maximum: 1000
-          minimum: 0
-          type: integer
-        regions:
-          description: Geographic region ids to filter by; each must be an integer **1–9999** inclusive.
-          items:
-            maximum: 9999
-            minimum: 1
-            type: integer
-          type: array
-      type: object
-    TimeseriesMetadata:
-      description: Descriptive metadata the ranking model uses to interpret and contextualize the timeseries.
-      example:
-        title: Brent Crude Oil Price Monthly
-        description: Monthly average Brent crude oil spot price in USD/barrel, sourced from EIA.
-        keywords:
-        - oil
-        - brent
-        - energy
-        - commodity
-        - barrel
-      properties:
-        description:
-          description: Extended context for the model, up to 2048 characters. More detail improves driver relevance.
-          maxLength: 2048
+        error:
+          description: Human-readable error message.
           type: string
-        keywords:
-          description: Up to 20 semantic tags that help anchor the search to relevant datasets.
-          items:
-            maxLength: 255
-            minLength: 1
-            type: string
-          maxItems: 20
-          type: array
-        title:
-          description: Short identifier for the series, 20–511 characters.
-          maxLength: 511
-          minLength: 20
+        trace_id:
+          description: Correlation id for this request, also returned in the X-Trace-Id response header. Quote it when contacting support so the request can be traced.
           type: string
       required:
-      - title
+      - error
       type: object
     DriverItemV1:
       description: A ranked dataset candidate returned by `POST /api/v1/drivers`.
@@ -326,6 +292,38 @@ components:
       required:
       - error
       - details
+      type: object
+    TimeseriesMetadata:
+      description: Descriptive metadata the ranking model uses to interpret and contextualize the timeseries.
+      example:
+        title: Brent Crude Oil Price Monthly
+        description: Monthly average Brent crude oil spot price in USD/barrel, sourced from EIA.
+        keywords:
+        - oil
+        - brent
+        - energy
+        - commodity
+        - barrel
+      properties:
+        description:
+          description: Extended context for the model, up to 2048 characters. More detail improves driver relevance.
+          maxLength: 2048
+          type: string
+        keywords:
+          description: Up to 20 semantic tags that help anchor the search to relevant datasets.
+          items:
+            maxLength: 255
+            minLength: 1
+            type: string
+          maxItems: 20
+          type: array
+        title:
+          description: Short identifier for the series, 20–511 characters.
+          maxLength: 511
+          minLength: 20
+          type: string
+      required:
+      - title
       type: object
   securitySchemes:
     bearerAuth:

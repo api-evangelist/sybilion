@@ -1,0 +1,58 @@
+{
+  "provider": "sybilion",
+  "sources": [
+    "_original/sybilion-operational-api-openapi-original.yml"
+  ],
+  "outputs": [
+    "sybilion-alerts-api-openapi.yml",
+    "sybilion-categories-api-openapi.yml",
+    "sybilion-drivers-api-openapi.yml",
+    "sybilion-forecasts-api-openapi.yml",
+    "sybilion-health-api-openapi.yml",
+    "sybilion-jobs-api-openapi.yml",
+    "sybilion-me-api-openapi.yml",
+    "sybilion-regions-api-openapi.yml",
+    "sybilion-usage-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "1 archived document(s) dropped as subsets of other archived documents",
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "sybilion-operational-api-openapi-original.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "sybilion-operational-api-openapi-original.yml: tagged paths POST /api/v1/alerts -> Alerts",
+    "sybilion-operational-api-openapi-original.yml: tagged paths GET /api/v1/categories -> Categories",
+    "sybilion-operational-api-openapi-original.yml: tagged paths POST /api/v1/drivers -> Drivers",
+    "sybilion-operational-api-openapi-original.yml: tagged paths POST /api/v1/forecasts -> Forecasts",
+    "sybilion-operational-api-openapi-original.yml: tagged paths GET /api/v1/forecasts/{id} -> Forecasts",
+    "sybilion-operational-api-openapi-original.yml: tagged paths GET /api/v1/forecasts/{id}/artifacts/{name} -> Forecasts",
+    "sybilion-operational-api-openapi-original.yml: tagged paths GET /api/v1/jobs -> Jobs",
+    "sybilion-operational-api-openapi-original.yml: tagged paths GET /api/v1/me -> Me",
+    "sybilion-operational-api-openapi-original.yml: tagged paths GET /api/v1/regions -> Regions",
+    "sybilion-operational-api-openapi-original.yml: tagged paths GET /api/v1/usage -> Usage",
+    "sybilion-operational-api-openapi-original.yml: tagged paths GET /health -> Health",
+    "sybilion-operational-api-openapi-original.yml: declared missing tag: Alerts",
+    "sybilion-operational-api-openapi-original.yml: declared missing tag: Categories",
+    "sybilion-operational-api-openapi-original.yml: declared missing tag: Drivers",
+    "sybilion-operational-api-openapi-original.yml: declared missing tag: Forecasts",
+    "sybilion-operational-api-openapi-original.yml: declared missing tag: Health",
+    "sybilion-operational-api-openapi-original.yml: declared missing tag: Jobs",
+    "sybilion-operational-api-openapi-original.yml: declared missing tag: Me",
+    "sybilion-operational-api-openapi-original.yml: declared missing tag: Regions",
+    "sybilion-operational-api-openapi-original.yml: declared missing tag: Usage",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "_original/sybilion-operational-api-openapi.yml: archived document superseded by a larger archived document",
+    "sybilion-alerts-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "sybilion-categories-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "sybilion-drivers-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "sybilion-forecasts-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "sybilion-health-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "sybilion-jobs-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "sybilion-me-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "sybilion-regions-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "sybilion-usage-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
+}

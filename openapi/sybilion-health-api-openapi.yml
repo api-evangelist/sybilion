@@ -2,11 +2,9 @@ openapi: 3.2.0
 info:
   description: 'The Sybilion API powers the Sybilion Developers Portal: forecasts, drivers, catalog, account
 
-    and usage. Authenticate every request with `Authorization: Bearer <token>` using either an
+    and usage. Authenticate every request with `Authorization: Bearer ` using either an
 
-    API key created in the Developers Portal or an Auth0 access token from your dashboard session.
-
-    '
+    API key created in the Developers Portal or an Auth0 access token from your dashboard session.'
   title: Sybilion Health API
   version: 0.1.0
 servers:
@@ -22,9 +20,7 @@ paths:
 
         state. A 200 means all components are healthy; 503 means at least one is in an
 
-        error state.
-
-        '
+        error state.'
       responses:
         '200':
           content:
@@ -89,6 +85,8 @@ paths:
       summary: Service health check
       tags:
       - Health
+      operationId: getHealth
+      x-operation-id-source: derived
 components:
   securitySchemes:
     bearerAuth:

@@ -2,11 +2,9 @@ openapi: 3.2.0
 info:
   description: 'The Sybilion API powers the Sybilion Developers Portal: forecasts, drivers, catalog, account
 
-    and usage. Authenticate every request with `Authorization: Bearer <token>` using either an
+    and usage. Authenticate every request with `Authorization: Bearer ` using either an
 
-    API key created in the Developers Portal or an Auth0 access token from your dashboard session.
-
-    '
+    API key created in the Developers Portal or an Auth0 access token from your dashboard session.'
   title: Sybilion Forecasts API
   version: 0.1.0
 servers:
@@ -29,9 +27,7 @@ paths:
 
         to the first of each month. At least one of `soft_horizon` or `hard_horizon`
 
-        must be specified.
-
-        '
+        must be specified.'
       requestBody:
         content:
           application/json:
@@ -98,6 +94,8 @@ paths:
       summary: Submit an async forecast job
       tags:
       - Forecasts
+      operationId: postApiV1Forecasts
+      x-operation-id-source: derived
   /api/v1/forecasts/{id}:
     get:
       description: 'Returns the current status and artifact metadata for a forecast job you own.
@@ -107,9 +105,7 @@ paths:
         download output files via `GET /api/v1/forecasts/{id}/artifacts/{name}`.
 
 
-        Jobs tombstoned by the retention policy return 404.
-
-        '
+        Jobs tombstoned by the retention policy return 404.'
       parameters:
       - description: Forecast job id returned by `POST /api/v1/forecasts`.
         in: path
@@ -180,6 +176,8 @@ paths:
       summary: Poll forecast job status and artifact list
       tags:
       - Forecasts
+      operationId: getApiV1ForecastsById
+      x-operation-id-source: derived
   /api/v1/forecasts/{id}/artifacts/{name}:
     get:
       description: 'Streams a single output file for a completed forecast job.
@@ -204,9 +202,7 @@ paths:
 
         Supports HTTP `Range` requests for partial downloads.
 
-        Jobs tombstoned by the retention policy return 404.
-
-        '
+        Jobs tombstoned by the retention policy return 404.'
       parameters:
       - description: Forecast job id.
         in: path
@@ -240,41 +236,10 @@ paths:
       summary: Download a forecast output file
       tags:
       - Forecasts
+      operationId: getApiV1ForecastsByIdArtifactsByName
+      x-operation-id-source: derived
 components:
   schemas:
-    ErrorMessage:
-      properties:
-        error:
-          description: Human-readable error message.
-          type: string
-        trace_id:
-          description: Correlation id for this request, also returned in the X-Trace-Id response header. Quote it when contacting support so the request can be traced.
-          type: string
-      required:
-      - error
-      type: object
-    ForecastArtifactMeta:
-      description: Metadata for a single output file produced by a completed forecast job.
-      example:
-        name: forecast.json
-        href: /api/v1/forecasts/a1b2c3d4-e5f6-7890-abcd-ef1234567890/artifacts/forecast.json
-        content_type: application/json
-        size: 4096
-      properties:
-        content_type:
-          description: MIME type of the artifact (e.g. `application/json`).
-          type: string
-        href:
-          description: Relative URL to stream via `GET /api/v1/forecasts/{id}/artifacts/{name}`.
-          type: string
-        name:
-          description: Artifact filename (e.g. `forecast.json`, `backtest_metrics.json`).
-          type: string
-        size:
-          description: File size in bytes.
-          format: int64
-          type: integer
-      type: object
     ForecastRequestV1:
       description: 'Body of `POST /api/v1/forecasts`. Submit a monthly timeseries and the pipeline
 
@@ -575,6 +540,66 @@ components:
             type: integer
           type: array
       type: object
+    ErrorMessage:
+      properties:
+        error:
+          description: Human-readable error message.
+          type: string
+        trace_id:
+          description: Correlation id for this request, also returned in the X-Trace-Id response header. Quote it when contacting support so the request can be traced.
+          type: string
+      required:
+      - error
+      type: object
+    ForecastArtifactMeta:
+      description: Metadata for a single output file produced by a completed forecast job.
+      example:
+        name: forecast.json
+        href: /api/v1/forecasts/a1b2c3d4-e5f6-7890-abcd-ef1234567890/artifacts/forecast.json
+        content_type: application/json
+        size: 4096
+      properties:
+        content_type:
+          description: MIME type of the artifact (e.g. `application/json`).
+          type: string
+        href:
+          description: Relative URL to stream via `GET /api/v1/forecasts/{id}/artifacts/{name}`.
+          type: string
+        name:
+          description: Artifact filename (e.g. `forecast.json`, `backtest_metrics.json`).
+          type: string
+        size:
+          description: File size in bytes.
+          format: int64
+          type: integer
+      type: object
+    ValidationErrorResponse:
+      example:
+        error: validation_failed
+        details:
+        - field: metadata.title
+          message: title must be at least 20 characters
+      properties:
+        details:
+          items:
+            properties:
+              field:
+                type: string
+              message:
+                type: string
+            required:
+            - field
+            - message
+            type: object
+          type: array
+        error:
+          enum:
+          - validation_failed
+          type: string
+      required:
+      - error
+      - details
+      type: object
     TimeseriesMetadata:
       description: Descriptive metadata the ranking model uses to interpret and contextualize the timeseries.
       example:
@@ -606,33 +631,6 @@ components:
           type: string
       required:
       - title
-      type: object
-    ValidationErrorResponse:
-      example:
-        error: validation_failed
-        details:
-        - field: metadata.title
-          message: title must be at least 20 characters
-      properties:
-        details:
-          items:
-            properties:
-              field:
-                type: string
-              message:
-                type: string
-            required:
-            - field
-            - message
-            type: object
-          type: array
-        error:
-          enum:
-          - validation_failed
-          type: string
-      required:
-      - error
-      - details
       type: object
   securitySchemes:
     bearerAuth:

@@ -2,11 +2,9 @@ openapi: 3.2.0
 info:
   description: 'The Sybilion API powers the Sybilion Developers Portal: forecasts, drivers, catalog, account
 
-    and usage. Authenticate every request with `Authorization: Bearer <token>` using either an
+    and usage. Authenticate every request with `Authorization: Bearer ` using either an
 
-    API key created in the Developers Portal or an Auth0 access token from your dashboard session.
-
-    '
+    API key created in the Developers Portal or an Auth0 access token from your dashboard session.'
   title: Sybilion Alerts API
   version: 0.1.0
 servers:
@@ -21,9 +19,7 @@ paths:
 
         This is a synchronous billed endpoint — you are charged per alert returned.
 
-        No charge is recorded on validation errors or upstream failures.
-
-        '
+        No charge is recorded on validation errors or upstream failures.'
       requestBody:
         content:
           application/json:
@@ -78,19 +74,10 @@ paths:
       summary: Detect anomaly alerts for your timeseries
       tags:
       - Alerts
+      operationId: postApiV1Alerts
+      x-operation-id-source: derived
 components:
   schemas:
-    ErrorMessage:
-      properties:
-        error:
-          description: Human-readable error message.
-          type: string
-        trace_id:
-          description: Correlation id for this request, also returned in the X-Trace-Id response header. Quote it when contacting support so the request can be traced.
-          type: string
-      required:
-      - error
-      type: object
     AlertsRequestV1:
       description: 'Body of `POST /api/v1/alerts`.
 
@@ -145,6 +132,48 @@ components:
       required:
       - metadata
       - context_enriched
+      type: object
+    Filters:
+      description: 'Optional narrowing for forecast, drivers, and alerts requests.
+
+        Category and region ids must fall in **1–9999**. Discover valid ids via
+
+        `GET /api/v1/regions` and `GET /api/v1/categories` — submitted ids are not
+
+        cross-checked on submit.
+
+        '
+      example:
+        categories:
+        - 3
+        - 7
+        regions:
+        - 42
+        - 88
+        limit: 25
+      properties:
+        categories:
+          description: Thematic category ids to filter by; each must be an integer **1–9999** inclusive.
+          items:
+            maximum: 9999
+            minimum: 1
+            type: integer
+          type: array
+        general_drivers:
+          description: When true, general (non category/region-specific) drivers are included in the driver candidate pool. Defaults to false.
+          type: boolean
+        limit:
+          description: Maximum number of items to return. When omitted, a per-environment default is applied (100 by default). The maximum accepted value is operator-configurable (default 1000).
+          maximum: 1000
+          minimum: 0
+          type: integer
+        regions:
+          description: Geographic region ids to filter by; each must be an integer **1–9999** inclusive.
+          items:
+            maximum: 9999
+            minimum: 1
+            type: integer
+          type: array
       type: object
     AlertItemV1:
       description: A single alert returned by the upstream Recommend service.
@@ -212,47 +241,43 @@ components:
           format: uri
           type: string
       type: object
-    Filters:
-      description: 'Optional narrowing for forecast, drivers, and alerts requests.
-
-        Category and region ids must fall in **1–9999**. Discover valid ids via
-
-        `GET /api/v1/regions` and `GET /api/v1/categories` — submitted ids are not
-
-        cross-checked on submit.
-
-        '
-      example:
-        categories:
-        - 3
-        - 7
-        regions:
-        - 42
-        - 88
-        limit: 25
+    ErrorMessage:
       properties:
-        categories:
-          description: Thematic category ids to filter by; each must be an integer **1–9999** inclusive.
+        error:
+          description: Human-readable error message.
+          type: string
+        trace_id:
+          description: Correlation id for this request, also returned in the X-Trace-Id response header. Quote it when contacting support so the request can be traced.
+          type: string
+      required:
+      - error
+      type: object
+    ValidationErrorResponse:
+      example:
+        error: validation_failed
+        details:
+        - field: metadata.title
+          message: title must be at least 20 characters
+      properties:
+        details:
           items:
-            maximum: 9999
-            minimum: 1
-            type: integer
+            properties:
+              field:
+                type: string
+              message:
+                type: string
+            required:
+            - field
+            - message
+            type: object
           type: array
-        general_drivers:
-          description: When true, general (non category/region-specific) drivers are included in the driver candidate pool. Defaults to false.
-          type: boolean
-        limit:
-          description: Maximum number of items to return. When omitted, a per-environment default is applied (100 by default). The maximum accepted value is operator-configurable (default 1000).
-          maximum: 1000
-          minimum: 0
-          type: integer
-        regions:
-          description: Geographic region ids to filter by; each must be an integer **1–9999** inclusive.
-          items:
-            maximum: 9999
-            minimum: 1
-            type: integer
-          type: array
+        error:
+          enum:
+          - validation_failed
+          type: string
+      required:
+      - error
+      - details
       type: object
     TimeseriesMetadata:
       description: Descriptive metadata the ranking model uses to interpret and contextualize the timeseries.
@@ -285,33 +310,6 @@ components:
           type: string
       required:
       - title
-      type: object
-    ValidationErrorResponse:
-      example:
-        error: validation_failed
-        details:
-        - field: metadata.title
-          message: title must be at least 20 characters
-      properties:
-        details:
-          items:
-            properties:
-              field:
-                type: string
-              message:
-                type: string
-            required:
-            - field
-            - message
-            type: object
-          type: array
-        error:
-          enum:
-          - validation_failed
-          type: string
-      required:
-      - error
-      - details
       type: object
   securitySchemes:
     bearerAuth:

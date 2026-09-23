@@ -2,11 +2,9 @@ openapi: 3.2.0
 info:
   description: 'The Sybilion API powers the Sybilion Developers Portal: forecasts, drivers, catalog, account
 
-    and usage. Authenticate every request with `Authorization: Bearer <token>` using either an
+    and usage. Authenticate every request with `Authorization: Bearer ` using either an
 
-    API key created in the Developers Portal or an Auth0 access token from your dashboard session.
-
-    '
+    API key created in the Developers Portal or an Auth0 access token from your dashboard session.'
   title: Sybilion Categories API
   version: 0.1.0
 servers:
@@ -27,9 +25,7 @@ paths:
 
         so you can filter by any integer in 1–9999, but this listing shows the ones
 
-        that actually exist in the catalog.
-
-        '
+        that actually exist in the catalog.'
       responses:
         '200':
           content:
@@ -62,18 +58,10 @@ paths:
       summary: List available thematic categories
       tags:
       - Categories
+      operationId: getApiV1Categories
+      x-operation-id-source: derived
 components:
   schemas:
-    CategoryListResponse:
-      properties:
-        items:
-          description: Complete category listing, sorted by id ascending. No pagination.
-          items:
-            $ref: '#/components/schemas/CategoryItemV1'
-          type: array
-      required:
-      - items
-      type: object
     ErrorMessage:
       properties:
         error:
@@ -84,6 +72,16 @@ components:
           type: string
       required:
       - error
+      type: object
+    CategoryListResponse:
+      properties:
+        items:
+          description: Complete category listing, sorted by id ascending. No pagination.
+          items:
+            $ref: '#/components/schemas/CategoryItemV1'
+          type: array
+      required:
+      - items
       type: object
     CategoryItemV1:
       description: A single thematic category returned by GET /api/v1/categories.

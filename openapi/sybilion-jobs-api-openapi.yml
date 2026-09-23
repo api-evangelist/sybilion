@@ -2,11 +2,9 @@ openapi: 3.2.0
 info:
   description: 'The Sybilion API powers the Sybilion Developers Portal: forecasts, drivers, catalog, account
 
-    and usage. Authenticate every request with `Authorization: Bearer <token>` using either an
+    and usage. Authenticate every request with `Authorization: Bearer ` using either an
 
-    API key created in the Developers Portal or an Auth0 access token from your dashboard session.
-
-    '
+    API key created in the Developers Portal or an Auth0 access token from your dashboard session.'
   title: Sybilion Jobs API
   version: 0.1.0
 servers:
@@ -25,9 +23,7 @@ paths:
 
         Jobs tombstoned by the retention policy are excluded here and return 404
 
-        on the detail endpoint.
-
-        '
+        on the detail endpoint.'
       parameters:
       - description: 1-indexed page number.
         in: query
@@ -116,6 +112,8 @@ paths:
       summary: List your async jobs
       tags:
       - Jobs
+      operationId: getApiV1Jobs
+      x-operation-id-source: derived
 components:
   schemas:
     JobSummary:

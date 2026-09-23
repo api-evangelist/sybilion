@@ -2,11 +2,9 @@ openapi: 3.2.0
 info:
   description: 'The Sybilion API powers the Sybilion Developers Portal: forecasts, drivers, catalog, account
 
-    and usage. Authenticate every request with `Authorization: Bearer <token>` using either an
+    and usage. Authenticate every request with `Authorization: Bearer ` using either an
 
-    API key created in the Developers Portal or an Auth0 access token from your dashboard session.
-
-    '
+    API key created in the Developers Portal or an Auth0 access token from your dashboard session.'
   title: Sybilion Regions API
   version: 0.1.0
 servers:
@@ -27,9 +25,7 @@ paths:
 
         so you can filter by any integer in 1–9999, but this listing shows the ones
 
-        that actually exist in the catalog.
-
-        '
+        that actually exist in the catalog.'
       responses:
         '200':
           content:
@@ -64,8 +60,21 @@ paths:
       summary: List available geographic regions
       tags:
       - Regions
+      operationId: getApiV1Regions
+      x-operation-id-source: derived
 components:
   schemas:
+    ErrorMessage:
+      properties:
+        error:
+          description: Human-readable error message.
+          type: string
+        trace_id:
+          description: Correlation id for this request, also returned in the X-Trace-Id response header. Quote it when contacting support so the request can be traced.
+          type: string
+      required:
+      - error
+      type: object
     RegionListResponse:
       properties:
         items:
@@ -98,17 +107,6 @@ components:
       - name
       - latitude
       - longitude
-      type: object
-    ErrorMessage:
-      properties:
-        error:
-          description: Human-readable error message.
-          type: string
-        trace_id:
-          description: Correlation id for this request, also returned in the X-Trace-Id response header. Quote it when contacting support so the request can be traced.
-          type: string
-      required:
-      - error
       type: object
   securitySchemes:
     bearerAuth:
