@@ -101,6 +101,33 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    ValidationErrorResponse:
+      example:
+        error: validation_failed
+        details:
+        - field: metadata.title
+          message: title must be at least 20 characters
+      properties:
+        details:
+          items:
+            properties:
+              field:
+                type: string
+              message:
+                type: string
+            required:
+            - field
+            - message
+            type: object
+          type: array
+        error:
+          enum:
+          - validation_failed
+          type: string
+      required:
+      - error
+      - details
+      type: object
     Filters:
       description: 'Optional narrowing for forecast, drivers, and alerts requests.
 
@@ -142,6 +169,24 @@ components:
             minimum: 1
             type: integer
           type: array
+      type: object
+    DriverItemV1:
+      description: A ranked dataset candidate returned by `POST /api/v1/drivers`.
+      example:
+        hash_id: d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9
+        driver_name: Natural Gas Futures Price (Henry Hub)
+        score: 0.87
+      properties:
+        driver_name:
+          description: Human-readable name of the dataset.
+          type: string
+        hash_id:
+          description: Stable identifier for the dataset; use to reference this driver across requests.
+          type: string
+        score:
+          description: Relevance score indicating how well this dataset explains your timeseries (higher is more relevant).
+          format: double
+          type: number
       type: object
     RecommendRequestV1:
       description: 'Body of `POST /api/v1/drivers`. Mirrors the upstream Recommend service
@@ -237,62 +282,6 @@ components:
       - recency_factor
       - timeseries_metadata
       type: object
-    ErrorMessage:
-      properties:
-        error:
-          description: Human-readable error message.
-          type: string
-        trace_id:
-          description: Correlation id for this request, also returned in the X-Trace-Id response header. Quote it when contacting support so the request can be traced.
-          type: string
-      required:
-      - error
-      type: object
-    DriverItemV1:
-      description: A ranked dataset candidate returned by `POST /api/v1/drivers`.
-      example:
-        hash_id: d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9
-        driver_name: Natural Gas Futures Price (Henry Hub)
-        score: 0.87
-      properties:
-        driver_name:
-          description: Human-readable name of the dataset.
-          type: string
-        hash_id:
-          description: Stable identifier for the dataset; use to reference this driver across requests.
-          type: string
-        score:
-          description: Relevance score indicating how well this dataset explains your timeseries (higher is more relevant).
-          format: double
-          type: number
-      type: object
-    ValidationErrorResponse:
-      example:
-        error: validation_failed
-        details:
-        - field: metadata.title
-          message: title must be at least 20 characters
-      properties:
-        details:
-          items:
-            properties:
-              field:
-                type: string
-              message:
-                type: string
-            required:
-            - field
-            - message
-            type: object
-          type: array
-        error:
-          enum:
-          - validation_failed
-          type: string
-      required:
-      - error
-      - details
-      type: object
     TimeseriesMetadata:
       description: Descriptive metadata the ranking model uses to interpret and contextualize the timeseries.
       example:
@@ -324,6 +313,17 @@ components:
           type: string
       required:
       - title
+      type: object
+    ErrorMessage:
+      properties:
+        error:
+          description: Human-readable error message.
+          type: string
+        trace_id:
+          description: Correlation id for this request, also returned in the X-Trace-Id response header. Quote it when contacting support so the request can be traced.
+          type: string
+      required:
+      - error
       type: object
   securitySchemes:
     bearerAuth:

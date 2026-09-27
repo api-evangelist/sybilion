@@ -55,7 +55,7 @@ tags:
   - Trading analytics
   - AI decision support
   - MCP
-  - agent-native
+  - Agent-Native
   - Causal Inference
   - Anomaly Detection
 tags_raw:
@@ -71,6 +71,7 @@ tags_raw:
   - Agent-native
   - Causal inference
   - Anomaly detection
+  - agent-native
 apis:
 - name: Sybilion MCP Server
   description: >-
@@ -84,7 +85,7 @@ apis:
   baseURL: https://mcp.sybilion.dev/mcp
   tags:
   - MCP
-  - agent-native
+  - Agent-Native
   - AI decision support
   - Economic Forecasting
   - Time-series forecasting
@@ -94,6 +95,7 @@ apis:
   - AI decision support
   - Economic forecasting
   - Time-series forecasting
+  - agent-native
   properties:
   - type: MCPServer
     url: mcp/sybilion-mcp.yml

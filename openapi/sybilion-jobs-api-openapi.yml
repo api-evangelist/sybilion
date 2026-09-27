@@ -116,6 +116,49 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    JobsPagination:
+      properties:
+        limit:
+          description: Page size echoed back from the request.
+          maximum: 200
+          minimum: 1
+          type: integer
+        order:
+          description: Sort direction echoed back from the request.
+          enum:
+          - asc
+          - desc
+          type: string
+        page:
+          description: 1-indexed current page number echoed back from the request.
+          minimum: 1
+          type: integer
+        sort:
+          description: Column the rows are sorted by, echoed back from the request.
+          enum:
+          - id
+          - created_at
+          - settled_at
+          - eur_cents_final
+          type: string
+        total:
+          description: Total matching rows for the authenticated user (full set, not just this page).
+          format: int64
+          minimum: 0
+          type: integer
+        total_pages:
+          description: ceil(total / limit). Zero when total is zero.
+          format: int64
+          minimum: 0
+          type: integer
+      required:
+      - page
+      - limit
+      - total
+      - total_pages
+      - sort
+      - order
+      type: object
     JobSummary:
       description: Lightweight summary of an async job (no payload or artifact manifest).
       example:
@@ -175,49 +218,6 @@ components:
       - status
       - created_at
       - settled
-      type: object
-    JobsPagination:
-      properties:
-        limit:
-          description: Page size echoed back from the request.
-          maximum: 200
-          minimum: 1
-          type: integer
-        order:
-          description: Sort direction echoed back from the request.
-          enum:
-          - asc
-          - desc
-          type: string
-        page:
-          description: 1-indexed current page number echoed back from the request.
-          minimum: 1
-          type: integer
-        sort:
-          description: Column the rows are sorted by, echoed back from the request.
-          enum:
-          - id
-          - created_at
-          - settled_at
-          - eur_cents_final
-          type: string
-        total:
-          description: Total matching rows for the authenticated user (full set, not just this page).
-          format: int64
-          minimum: 0
-          type: integer
-        total_pages:
-          description: ceil(total / limit). Zero when total is zero.
-          format: int64
-          minimum: 0
-          type: integer
-      required:
-      - page
-      - limit
-      - total
-      - total_pages
-      - sort
-      - order
       type: object
   securitySchemes:
     bearerAuth:

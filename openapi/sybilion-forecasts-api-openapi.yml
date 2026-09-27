@@ -540,39 +540,6 @@ components:
             type: integer
           type: array
       type: object
-    ErrorMessage:
-      properties:
-        error:
-          description: Human-readable error message.
-          type: string
-        trace_id:
-          description: Correlation id for this request, also returned in the X-Trace-Id response header. Quote it when contacting support so the request can be traced.
-          type: string
-      required:
-      - error
-      type: object
-    ForecastArtifactMeta:
-      description: Metadata for a single output file produced by a completed forecast job.
-      example:
-        name: forecast.json
-        href: /api/v1/forecasts/a1b2c3d4-e5f6-7890-abcd-ef1234567890/artifacts/forecast.json
-        content_type: application/json
-        size: 4096
-      properties:
-        content_type:
-          description: MIME type of the artifact (e.g. `application/json`).
-          type: string
-        href:
-          description: Relative URL to stream via `GET /api/v1/forecasts/{id}/artifacts/{name}`.
-          type: string
-        name:
-          description: Artifact filename (e.g. `forecast.json`, `backtest_metrics.json`).
-          type: string
-        size:
-          description: File size in bytes.
-          format: int64
-          type: integer
-      type: object
     ValidationErrorResponse:
       example:
         error: validation_failed
@@ -599,6 +566,28 @@ components:
       required:
       - error
       - details
+      type: object
+    ForecastArtifactMeta:
+      description: Metadata for a single output file produced by a completed forecast job.
+      example:
+        name: forecast.json
+        href: /api/v1/forecasts/a1b2c3d4-e5f6-7890-abcd-ef1234567890/artifacts/forecast.json
+        content_type: application/json
+        size: 4096
+      properties:
+        content_type:
+          description: MIME type of the artifact (e.g. `application/json`).
+          type: string
+        href:
+          description: Relative URL to stream via `GET /api/v1/forecasts/{id}/artifacts/{name}`.
+          type: string
+        name:
+          description: Artifact filename (e.g. `forecast.json`, `backtest_metrics.json`).
+          type: string
+        size:
+          description: File size in bytes.
+          format: int64
+          type: integer
       type: object
     TimeseriesMetadata:
       description: Descriptive metadata the ranking model uses to interpret and contextualize the timeseries.
@@ -631,6 +620,17 @@ components:
           type: string
       required:
       - title
+      type: object
+    ErrorMessage:
+      properties:
+        error:
+          description: Human-readable error message.
+          type: string
+        trace_id:
+          description: Correlation id for this request, also returned in the X-Trace-Id response header. Quote it when contacting support so the request can be traced.
+          type: string
+      required:
+      - error
       type: object
   securitySchemes:
     bearerAuth:
