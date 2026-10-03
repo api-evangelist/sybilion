@@ -113,6 +113,50 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    Pagination:
+      properties:
+        limit:
+          description: Page size echoed back from the request.
+          maximum: 200
+          minimum: 1
+          type: integer
+        order:
+          description: Sort direction.
+          enum:
+          - asc
+          - desc
+          type: string
+        page:
+          description: 1-indexed current page number echoed back from the request.
+          minimum: 1
+          type: integer
+        sort:
+          description: Column the rows are sorted by.
+          enum:
+          - id
+          - created_at
+          - eur_cents_charged
+          - credits_charged
+          - units
+          type: string
+        total:
+          description: Total matching rows for the authenticated user (full set, not just this page).
+          format: int64
+          minimum: 0
+          type: integer
+        total_pages:
+          description: ceil(total / limit). Zero when total is zero.
+          format: int64
+          minimum: 0
+          type: integer
+      required:
+      - page
+      - limit
+      - total
+      - total_pages
+      - sort
+      - order
+      type: object
     UsageEvent:
       description: A single billing charge, corresponding to one API call or one completed async job.
       example:
@@ -158,50 +202,6 @@ components:
       - credits_charged
       - eur_cents_charged
       - created_at
-      type: object
-    Pagination:
-      properties:
-        limit:
-          description: Page size echoed back from the request.
-          maximum: 200
-          minimum: 1
-          type: integer
-        order:
-          description: Sort direction.
-          enum:
-          - asc
-          - desc
-          type: string
-        page:
-          description: 1-indexed current page number echoed back from the request.
-          minimum: 1
-          type: integer
-        sort:
-          description: Column the rows are sorted by.
-          enum:
-          - id
-          - created_at
-          - eur_cents_charged
-          - credits_charged
-          - units
-          type: string
-        total:
-          description: Total matching rows for the authenticated user (full set, not just this page).
-          format: int64
-          minimum: 0
-          type: integer
-        total_pages:
-          description: ceil(total / limit). Zero when total is zero.
-          format: int64
-          minimum: 0
-          type: integer
-      required:
-      - page
-      - limit
-      - total
-      - total_pages
-      - sort
-      - order
       type: object
   securitySchemes:
     bearerAuth:
