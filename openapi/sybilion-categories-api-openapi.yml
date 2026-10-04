@@ -73,16 +73,6 @@ components:
       required:
       - error
       type: object
-    CategoryListResponse:
-      properties:
-        items:
-          description: Complete category listing, sorted by id ascending. No pagination.
-          items:
-            $ref: '#/components/schemas/CategoryItemV1'
-          type: array
-      required:
-      - items
-      type: object
     CategoryItemV1:
       description: A single thematic category returned by GET /api/v1/categories.
       properties:
@@ -95,6 +85,16 @@ components:
       required:
       - id
       - name
+      type: object
+    CategoryListResponse:
+      properties:
+        items:
+          description: Complete category listing, sorted by id ascending. No pagination.
+          items:
+            $ref: '#/components/schemas/CategoryItemV1'
+          type: array
+      required:
+      - items
       type: object
   securitySchemes:
     bearerAuth:

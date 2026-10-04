@@ -89,138 +89,6 @@ components:
       required:
       - error
       type: object
-    Filters:
-      description: 'Optional narrowing for forecast, drivers, and alerts requests.
-
-        Category and region ids must fall in **1–9999**. Discover valid ids via
-
-        `GET /api/v1/regions` and `GET /api/v1/categories` — submitted ids are not
-
-        cross-checked on submit.
-
-        '
-      example:
-        categories:
-        - 3
-        - 7
-        regions:
-        - 42
-        - 88
-        limit: 25
-      properties:
-        categories:
-          description: Thematic category ids to filter by; each must be an integer **1–9999** inclusive.
-          items:
-            maximum: 9999
-            minimum: 1
-            type: integer
-          type: array
-        general_drivers:
-          description: When true, general (non category/region-specific) drivers are included in the driver candidate pool. Defaults to false.
-          type: boolean
-        limit:
-          description: Maximum number of items to return. When omitted, a per-environment default is applied (100 by default). The maximum accepted value is operator-configurable (default 1000).
-          maximum: 1000
-          minimum: 0
-          type: integer
-        regions:
-          description: Geographic region ids to filter by; each must be an integer **1–9999** inclusive.
-          items:
-            maximum: 9999
-            minimum: 1
-            type: integer
-          type: array
-      type: object
-    AlertItemV1:
-      description: A single alert returned by the upstream Recommend service.
-      example:
-        trending: true
-        name: OMX Copenhagen Oil, Gas and Coal Price Index
-        pct_change: -7.14
-        news:
-        - trending: true
-          title: US-Iran agreed on principal deal to open Strait of Hormuz
-          description: The US and Iran have reportedly reached a preliminary understanding to reopen the Strait of Hormuz.
-          url: https://www.thenews.com.pk/latest/1403722
-          published_at: '2026-05-24T21:28:00Z'
-          source_name: The News International
-          category: world
-      properties:
-        name:
-          description: Human-readable name of the dataset or index that triggered the alert.
-          type: string
-        news:
-          description: Related news articles driving this alert.
-          items:
-            $ref: '#/components/schemas/NewsItemV1'
-          type: array
-        pct_change:
-          description: Percentage change that triggered the alert (negative = decline, positive = surge).
-          format: double
-          type: number
-        trending:
-          description: Whether this alert is currently trending across the platform.
-          type: boolean
-      type: object
-    TimeseriesMetadata:
-      description: Descriptive metadata the ranking model uses to interpret and contextualize the timeseries.
-      example:
-        title: Brent Crude Oil Price Monthly
-        description: Monthly average Brent crude oil spot price in USD/barrel, sourced from EIA.
-        keywords:
-        - oil
-        - brent
-        - energy
-        - commodity
-        - barrel
-      properties:
-        description:
-          description: Extended context for the model, up to 2048 characters. More detail improves driver relevance.
-          maxLength: 2048
-          type: string
-        keywords:
-          description: Up to 20 semantic tags that help anchor the search to relevant datasets.
-          items:
-            maxLength: 255
-            minLength: 1
-            type: string
-          maxItems: 20
-          type: array
-        title:
-          description: Short identifier for the series, 20–511 characters.
-          maxLength: 511
-          minLength: 20
-          type: string
-      required:
-      - title
-      type: object
-    ValidationErrorResponse:
-      example:
-        error: validation_failed
-        details:
-        - field: metadata.title
-          message: title must be at least 20 characters
-      properties:
-        details:
-          items:
-            properties:
-              field:
-                type: string
-              message:
-                type: string
-            required:
-            - field
-            - message
-            type: object
-          type: array
-        error:
-          enum:
-          - validation_failed
-          type: string
-      required:
-      - error
-      - details
-      type: object
     AlertsRequestV1:
       description: 'Body of `POST /api/v1/alerts`.
 
@@ -275,6 +143,138 @@ components:
       required:
       - metadata
       - context_enriched
+      type: object
+    TimeseriesMetadata:
+      description: Descriptive metadata the ranking model uses to interpret and contextualize the timeseries.
+      example:
+        title: Brent Crude Oil Price Monthly
+        description: Monthly average Brent crude oil spot price in USD/barrel, sourced from EIA.
+        keywords:
+        - oil
+        - brent
+        - energy
+        - commodity
+        - barrel
+      properties:
+        description:
+          description: Extended context for the model, up to 2048 characters. More detail improves driver relevance.
+          maxLength: 2048
+          type: string
+        keywords:
+          description: Up to 20 semantic tags that help anchor the search to relevant datasets.
+          items:
+            maxLength: 255
+            minLength: 1
+            type: string
+          maxItems: 20
+          type: array
+        title:
+          description: Short identifier for the series, 20–511 characters.
+          maxLength: 511
+          minLength: 20
+          type: string
+      required:
+      - title
+      type: object
+    AlertItemV1:
+      description: A single alert returned by the upstream Recommend service.
+      example:
+        trending: true
+        name: OMX Copenhagen Oil, Gas and Coal Price Index
+        pct_change: -7.14
+        news:
+        - trending: true
+          title: US-Iran agreed on principal deal to open Strait of Hormuz
+          description: The US and Iran have reportedly reached a preliminary understanding to reopen the Strait of Hormuz.
+          url: https://www.thenews.com.pk/latest/1403722
+          published_at: '2026-05-24T21:28:00Z'
+          source_name: The News International
+          category: world
+      properties:
+        name:
+          description: Human-readable name of the dataset or index that triggered the alert.
+          type: string
+        news:
+          description: Related news articles driving this alert.
+          items:
+            $ref: '#/components/schemas/NewsItemV1'
+          type: array
+        pct_change:
+          description: Percentage change that triggered the alert (negative = decline, positive = surge).
+          format: double
+          type: number
+        trending:
+          description: Whether this alert is currently trending across the platform.
+          type: boolean
+      type: object
+    Filters:
+      description: 'Optional narrowing for forecast, drivers, and alerts requests.
+
+        Category and region ids must fall in **1–9999**. Discover valid ids via
+
+        `GET /api/v1/regions` and `GET /api/v1/categories` — submitted ids are not
+
+        cross-checked on submit.
+
+        '
+      example:
+        categories:
+        - 3
+        - 7
+        regions:
+        - 42
+        - 88
+        limit: 25
+      properties:
+        categories:
+          description: Thematic category ids to filter by; each must be an integer **1–9999** inclusive.
+          items:
+            maximum: 9999
+            minimum: 1
+            type: integer
+          type: array
+        general_drivers:
+          description: When true, general (non category/region-specific) drivers are included in the driver candidate pool. Defaults to false.
+          type: boolean
+        limit:
+          description: Maximum number of items to return. When omitted, a per-environment default is applied (100 by default). The maximum accepted value is operator-configurable (default 1000).
+          maximum: 1000
+          minimum: 0
+          type: integer
+        regions:
+          description: Geographic region ids to filter by; each must be an integer **1–9999** inclusive.
+          items:
+            maximum: 9999
+            minimum: 1
+            type: integer
+          type: array
+      type: object
+    ValidationErrorResponse:
+      example:
+        error: validation_failed
+        details:
+        - field: metadata.title
+          message: title must be at least 20 characters
+      properties:
+        details:
+          items:
+            properties:
+              field:
+                type: string
+              message:
+                type: string
+            required:
+            - field
+            - message
+            type: object
+          type: array
+        error:
+          enum:
+          - validation_failed
+          type: string
+      required:
+      - error
+      - details
       type: object
     NewsItemV1:
       description: A news article associated with an alert.
