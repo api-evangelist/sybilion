@@ -1,0 +1,12 @@
+{
+ "url": "https://api.sybilion.dev/openapi.yaml",
+ "requested_url": "https://api.sybilion.dev/openapi.yaml",
+ "status": 200,
+ "content_type": "application/yaml; charset=utf-8",
+ "bytes": 76487,
+ "sha256": "2ba1f4c6f25d8850dde08633b68277e61171c9d734e4d9d3d5bb210fdfe5e3c8",
+ "fetched_at": "2026-10-04",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "byte-identical",
+ "note": "Re-fetched from the provider by verify-openapi-sources.py; the archived file is byte-identical to what the provider serves."
+}
