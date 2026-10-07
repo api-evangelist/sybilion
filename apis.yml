@@ -364,6 +364,8 @@ apis:
   - type: AgenticAccess
     url: agentic-access/sybilion-agentic-access.yml
 common:
+  - type: Pricing
+    url: https://sybilion.dev/docs/tiers
   - type: DeveloperPortal
     url: https://sybilion.dev/
   - type: Documentation
