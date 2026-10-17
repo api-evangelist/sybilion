@@ -240,17 +240,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    ErrorMessage:
-      properties:
-        error:
-          description: Human-readable error message.
-          type: string
-        trace_id:
-          description: Correlation id for this request, also returned in the X-Trace-Id response header. Quote it when contacting support so the request can be traced.
-          type: string
-      required:
-      - error
-      type: object
     TimeseriesMetadata:
       description: Descriptive metadata the ranking model uses to interpret and contextualize the timeseries.
       example:
@@ -283,69 +272,16 @@ components:
       required:
       - title
       type: object
-    Filters:
-      description: 'Optional narrowing for forecast, drivers, and alerts requests.
-
-        Category and region ids must fall in **1–9999**. Discover valid ids via
-
-        `GET /api/v1/regions` and `GET /api/v1/categories` — submitted ids are not
-
-        cross-checked on submit.
-
-        '
-      example:
-        categories:
-        - 3
-        - 7
-        regions:
-        - 42
-        - 88
-        limit: 25
+    ErrorMessage:
       properties:
-        categories:
-          description: Thematic category ids to filter by; each must be an integer **1–9999** inclusive.
-          items:
-            maximum: 9999
-            minimum: 1
-            type: integer
-          type: array
-        general_drivers:
-          description: When true, general (non category/region-specific) drivers are included in the driver candidate pool. Defaults to false.
-          type: boolean
-        limit:
-          description: Maximum number of items to return. When omitted, a per-environment default is applied (100 by default). The maximum accepted value is operator-configurable (default 1000).
-          maximum: 1000
-          minimum: 0
-          type: integer
-        regions:
-          description: Geographic region ids to filter by; each must be an integer **1–9999** inclusive.
-          items:
-            maximum: 9999
-            minimum: 1
-            type: integer
-          type: array
-      type: object
-    ForecastArtifactMeta:
-      description: Metadata for a single output file produced by a completed forecast job.
-      example:
-        name: forecast.json
-        href: /api/v1/forecasts/a1b2c3d4-e5f6-7890-abcd-ef1234567890/artifacts/forecast.json
-        content_type: application/json
-        size: 4096
-      properties:
-        content_type:
-          description: MIME type of the artifact (e.g. `application/json`).
+        error:
+          description: Human-readable error message.
           type: string
-        href:
-          description: Relative URL to stream via `GET /api/v1/forecasts/{id}/artifacts/{name}`.
+        trace_id:
+          description: Correlation id for this request, also returned in the X-Trace-Id response header. Quote it when contacting support so the request can be traced.
           type: string
-        name:
-          description: Artifact filename (e.g. `forecast.json`, `backtest_metrics.json`).
-          type: string
-        size:
-          description: File size in bytes.
-          format: int64
-          type: integer
+      required:
+      - error
       type: object
     ValidationErrorResponse:
       example:
@@ -631,6 +567,70 @@ components:
       - recency_factor
       - timeseries_metadata
       - timeseries
+      type: object
+    ForecastArtifactMeta:
+      description: Metadata for a single output file produced by a completed forecast job.
+      example:
+        name: forecast.json
+        href: /api/v1/forecasts/a1b2c3d4-e5f6-7890-abcd-ef1234567890/artifacts/forecast.json
+        content_type: application/json
+        size: 4096
+      properties:
+        content_type:
+          description: MIME type of the artifact (e.g. `application/json`).
+          type: string
+        href:
+          description: Relative URL to stream via `GET /api/v1/forecasts/{id}/artifacts/{name}`.
+          type: string
+        name:
+          description: Artifact filename (e.g. `forecast.json`, `backtest_metrics.json`).
+          type: string
+        size:
+          description: File size in bytes.
+          format: int64
+          type: integer
+      type: object
+    Filters:
+      description: 'Optional narrowing for forecast, drivers, and alerts requests.
+
+        Category and region ids must fall in **1–9999**. Discover valid ids via
+
+        `GET /api/v1/regions` and `GET /api/v1/categories` — submitted ids are not
+
+        cross-checked on submit.
+
+        '
+      example:
+        categories:
+        - 3
+        - 7
+        regions:
+        - 42
+        - 88
+        limit: 25
+      properties:
+        categories:
+          description: Thematic category ids to filter by; each must be an integer **1–9999** inclusive.
+          items:
+            maximum: 9999
+            minimum: 1
+            type: integer
+          type: array
+        general_drivers:
+          description: When true, general (non category/region-specific) drivers are included in the driver candidate pool. Defaults to false.
+          type: boolean
+        limit:
+          description: Maximum number of items to return. When omitted, a per-environment default is applied (100 by default). The maximum accepted value is operator-configurable (default 1000).
+          maximum: 1000
+          minimum: 0
+          type: integer
+        regions:
+          description: Geographic region ids to filter by; each must be an integer **1–9999** inclusive.
+          items:
+            maximum: 9999
+            minimum: 1
+            type: integer
+          type: array
       type: object
   securitySchemes:
     bearerAuth:

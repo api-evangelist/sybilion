@@ -78,17 +78,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    ErrorMessage:
-      properties:
-        error:
-          description: Human-readable error message.
-          type: string
-        trace_id:
-          description: Correlation id for this request, also returned in the X-Trace-Id response header. Quote it when contacting support so the request can be traced.
-          type: string
-      required:
-      - error
-      type: object
     AlertsRequestV1:
       description: 'Body of `POST /api/v1/alerts`.
 
@@ -176,6 +165,79 @@ components:
       required:
       - title
       type: object
+    ErrorMessage:
+      properties:
+        error:
+          description: Human-readable error message.
+          type: string
+        trace_id:
+          description: Correlation id for this request, also returned in the X-Trace-Id response header. Quote it when contacting support so the request can be traced.
+          type: string
+      required:
+      - error
+      type: object
+    NewsItemV1:
+      description: A news article associated with an alert.
+      example:
+        trending: true
+        title: US-Iran agreed on principal deal to open Strait of Hormuz
+        description: The US and Iran have reportedly reached a preliminary understanding to reopen the Strait of Hormuz, one of the world's most critical oil shipping routes.
+        url: https://www.thenews.com.pk/latest/1403722
+        published_at: '2026-05-24T21:28:00Z'
+        source_name: The News International
+        category: world
+      properties:
+        category:
+          description: Topical category of the article (e.g. `world`, `business`, `energy`).
+          type: string
+        description:
+          description: Short summary of the article.
+          type: string
+        published_at:
+          description: Publication timestamp (RFC 3339 / ISO 8601).
+          format: date-time
+          type: string
+        source_name:
+          description: Name of the publication or media outlet.
+          type: string
+        title:
+          description: Headline of the news article.
+          type: string
+        trending:
+          description: Whether this article is currently trending across the platform.
+          type: boolean
+        url:
+          description: Canonical URL of the article.
+          format: uri
+          type: string
+      type: object
+    ValidationErrorResponse:
+      example:
+        error: validation_failed
+        details:
+        - field: metadata.title
+          message: title must be at least 20 characters
+      properties:
+        details:
+          items:
+            properties:
+              field:
+                type: string
+              message:
+                type: string
+            required:
+            - field
+            - message
+            type: object
+          type: array
+        error:
+          enum:
+          - validation_failed
+          type: string
+      required:
+      - error
+      - details
+      type: object
     AlertItemV1:
       description: A single alert returned by the upstream Recommend service.
       example:
@@ -248,68 +310,6 @@ components:
             minimum: 1
             type: integer
           type: array
-      type: object
-    ValidationErrorResponse:
-      example:
-        error: validation_failed
-        details:
-        - field: metadata.title
-          message: title must be at least 20 characters
-      properties:
-        details:
-          items:
-            properties:
-              field:
-                type: string
-              message:
-                type: string
-            required:
-            - field
-            - message
-            type: object
-          type: array
-        error:
-          enum:
-          - validation_failed
-          type: string
-      required:
-      - error
-      - details
-      type: object
-    NewsItemV1:
-      description: A news article associated with an alert.
-      example:
-        trending: true
-        title: US-Iran agreed on principal deal to open Strait of Hormuz
-        description: The US and Iran have reportedly reached a preliminary understanding to reopen the Strait of Hormuz, one of the world's most critical oil shipping routes.
-        url: https://www.thenews.com.pk/latest/1403722
-        published_at: '2026-05-24T21:28:00Z'
-        source_name: The News International
-        category: world
-      properties:
-        category:
-          description: Topical category of the article (e.g. `world`, `business`, `energy`).
-          type: string
-        description:
-          description: Short summary of the article.
-          type: string
-        published_at:
-          description: Publication timestamp (RFC 3339 / ISO 8601).
-          format: date-time
-          type: string
-        source_name:
-          description: Name of the publication or media outlet.
-          type: string
-        title:
-          description: Headline of the news article.
-          type: string
-        trending:
-          description: Whether this article is currently trending across the platform.
-          type: boolean
-        url:
-          description: Canonical URL of the article.
-          format: uri
-          type: string
       type: object
   securitySchemes:
     bearerAuth:
